@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 
@@ -28,11 +29,15 @@ namespace ElFinder
 
         public FileSystemDirectoryInfo(string path)
         {
+            Contract.Requires(path != null);
+
             m_info = new DirectoryInfo(path);
         }
 
         private FileSystemDirectoryInfo(DirectoryInfo info)
         {
+            Contract.Requires(info != null);
+
             m_info = info;
         }
 

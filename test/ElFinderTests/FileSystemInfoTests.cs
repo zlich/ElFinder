@@ -33,5 +33,15 @@ namespace ElFinderTests
 
             Assert.AreEqual(new FileInfo(path).LastWriteTimeUtc, info.LastWriteTimeUtc);
         }
+
+        [TestMethod]
+        public void TestMimeType()
+        {
+            FileSystemFileInfo info = new FileSystemFileInfo("testText.txt");
+            Assert.AreEqual("text/plain", info.MimeType);
+
+            info = new FileSystemFileInfo("testPicture.jpg");
+            Assert.AreEqual("image/jpeg", info.MimeType);
+        }
     }
 }

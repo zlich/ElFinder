@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace ElFinder
-{
+{    
     public interface IDirectoryInfo : IFileSystemInfo
     {
         IEnumerable<IDirectoryInfo> GetDirectories();

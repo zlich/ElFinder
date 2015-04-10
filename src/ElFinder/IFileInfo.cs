@@ -10,6 +10,10 @@ namespace ElFinder
     {
         long Length { get; }
 
+        string Extension { get; }
+
+        string DirectoryName { get; }
+
         IDirectoryInfo Directory { get; }
     }
 }

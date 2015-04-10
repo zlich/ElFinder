@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 using System.IO;
 
 namespace ElFinder
@@ -8,6 +9,11 @@ namespace ElFinder
         public string Name
         {
             get { return m_info.Name; }
+        }
+
+        public string Extension
+        {
+            get { return m_info.Extension; }
         }
 
         public string MimeType
@@ -32,6 +38,11 @@ namespace ElFinder
             get { return new FileSystemDirectoryInfo(m_info.DirectoryName); }
         }
 
+        public string DirectoryName
+        {
+            get { return m_info.DirectoryName; }
+        }
+
         public DateTime LastWriteTimeUtc
         {
             get { return m_info.LastWriteTimeUtc; }
@@ -39,6 +50,8 @@ namespace ElFinder
 
         public FileSystemFileInfo(string fileName)
         {
+            Contract.Requires(fileName != null);
+
             m_info = new FileInfo(fileName);
         }
 

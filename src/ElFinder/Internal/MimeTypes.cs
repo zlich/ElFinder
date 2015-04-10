@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.IO;
 using System.Reflection;
 
@@ -11,6 +12,9 @@ namespace ElFinder
     {
         public static string GetMimeType(string extension)
         {
+            Contract.Requires(extension != null);
+            Contract.Ensures(Contract.Result<string>() != null);
+
             return m_mimeTypes.ContainsKey(extension) ? m_mimeTypes[extension] : "unknown";
         }
 
@@ -20,7 +24,7 @@ namespace ElFinder
             Assembly assembly = Assembly.GetExecutingAssembly();
             if (assembly != null)
             {
-                using (Stream stream = assembly.GetManifestResourceStream("Elfinder.mimeTypes.txt"))
+                using (Stream stream = assembly.GetManifestResourceStream("ElFinder.Internal.mimeTypes.txt"))
                 {
                     using (StreamReader reader = new StreamReader(stream))
                     {

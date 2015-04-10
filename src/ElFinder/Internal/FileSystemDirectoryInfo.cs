@@ -41,6 +41,6 @@ namespace ElFinder
             m_info = info;
         }
 
-        private DirectoryInfo m_info;
+        private readonly DirectoryInfo m_info;
     }
 }

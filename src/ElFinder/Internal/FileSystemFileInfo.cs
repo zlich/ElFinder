@@ -55,6 +55,6 @@ namespace ElFinder
             m_info = new FileInfo(fileName);
         }
 
-        private FileInfo m_info;
+        private readonly FileInfo m_info;
     }
 }

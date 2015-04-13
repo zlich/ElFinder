@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web;
+using System.Linq;
+using System.Net;
 
 namespace ElFinder
 {
@@ -127,15 +129,43 @@ namespace ElFinder
 
         internal ResponseBase File(string target, bool download)
         {
-            FullPath fullPath = ParsePath(target);
-            //TODO: implement
-            //if (fullPath.IsDirectoty)
-            //    return new HttpStatusCodeResult(403, "You can not download whole folder");
-            //if (!fullPath.File.Exists)
-            //    return new HttpNotFoundResult("File not found");
-            //if (fullPath.Root.IsShowOnly)
-            //    return new HttpStatusCodeResult(403, "Access denied. Volume is for show only");
-            return new DownloadResponse(fullPath.File, download);
+            IUnitInfo unit = ParsePath(target);
+            if (unit is IDirectoryInfo)
+                return new HttpStatusCodeResponse(HttpStatusCode.Forbidden, "You can not download whole folder");
+            else
+            {
+                IFileInfo file = (IFileInfo)unit;
+                if (!file.Exists)
+                    return new HttpStatusCodeResponse(HttpStatusCode.NotFound, "File not found");
+                if (file.Root.IsShowOnly)
+                    return new HttpStatusCodeResponse(HttpStatusCode.Forbidden, "Access denied. Volume is for show only");
+
+                return new DownloadResponse(file, download);
+            }
+        }
+
+        private IUnitInfo ParsePath(string target)
+        {
+            string volumePrefix = null;
+            string pathHash = null;
+            for (int i = 0; i < target.Length; i++)
+            {
+                if (target[i] == '_')
+                {
+                    pathHash = target.Substring(i + 1);
+                    volumePrefix = target.Substring(0, i + 1);
+                    break;
+                }
+            }
+            IRoot root = m_roots.First(r => r.VolumeId == volumePrefix);
+            string relativePath = Helper.DecodePath(pathHash);
+            //string dirUrl = path != root.Directory.Name ? path : string.Empty;
+            IDirectoryInfo dir = root.GetDirectory(relativePath);
+            if (dir.Exists)
+                return dir;
+            else
+                return root.GetFile(relativePath);
+                //var file = new FileInfo(root.Directory.FullName + dirUrl);
         }
 
         private readonly List<IRoot> m_roots;

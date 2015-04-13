@@ -20,5 +20,8 @@
         int? MaxUploadSize { get; set; }
 
         bool UploadOverwrite { get; set; }
+
+        IDirectoryInfo GetDirectory(string relativePath);
+        IFileInfo GetFile(string relativePath);
     }
 }

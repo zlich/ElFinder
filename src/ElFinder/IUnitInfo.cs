@@ -23,6 +23,11 @@ namespace ElFinder
         string MimeType { get; }
 
         /// <summary>
+        /// Gets 
+        /// </summary>
+        bool Exists { get; }
+
+        /// <summary>
         /// Converts unit to data-trasfer object
         /// </summary>
         /// <returns>The data-transfer object</returns>

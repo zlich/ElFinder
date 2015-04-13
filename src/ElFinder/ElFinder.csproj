@@ -107,6 +107,7 @@
     <Compile Include="Internal\Response\DimResponse.cs" />
     <Compile Include="Internal\Response\ErrorResponse.cs" />
     <Compile Include="Internal\Response\GetResponse.cs" />
+    <Compile Include="Internal\Response\HttpStatusCodeResponse.cs" />
     <Compile Include="Internal\Response\JsonResponse.cs" />
     <Compile Include="Internal\Response\ListResponse.cs" />
     <Compile Include="Internal\Response\Open\Debug.cs" />

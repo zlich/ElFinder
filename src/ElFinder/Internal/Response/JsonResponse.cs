@@ -6,8 +6,9 @@ namespace ElFinder
 {
     internal abstract class JsonResponse : ResponseBase
     {
-        public override void WriteResponse(HttpResponse response)
+        public override void WriteResponse(HttpContext context)
         {
+            HttpResponse response = context.Response;
             response.ContentType = "application/json";
             response.ContentEncoding = Encoding.UTF8;
             using (JsonWriter jsonWriter = new JsonTextWriter(response.Output))

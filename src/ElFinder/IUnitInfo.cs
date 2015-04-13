@@ -18,6 +18,11 @@ namespace ElFinder
         IRoot Root { get; }
 
         /// <summary>
+        /// Gets unit mime type
+        /// </summary>
+        string MimeType { get; }
+
+        /// <summary>
         /// Converts unit to data-trasfer object
         /// </summary>
         /// <returns>The data-transfer object</returns>

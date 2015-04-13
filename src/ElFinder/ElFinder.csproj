@@ -92,14 +92,15 @@
   <ItemGroup>
     <Compile Include="Connector.cs" />
     <Compile Include="Driver.cs" />
+    <Compile Include="Internal\Response\DownloadResponse.cs" />
     <Compile Include="Internal\Response\Errors.cs" />
-    <Compile Include="Internal\DTO\UnitDTO.cs">
+    <Compile Include="DTO\UnitDTO.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Internal\DTO\DirectoryDTO.cs" />
-    <Compile Include="Internal\DTO\FileDTO.cs" />
-    <Compile Include="Internal\DTO\ImageDTO.cs" />
-    <Compile Include="Internal\DTO\RootDTO.cs" />
+    <Compile Include="DTO\DirectoryDTO.cs" />
+    <Compile Include="DTO\FileDTO.cs" />
+    <Compile Include="DTO\ImageDTO.cs" />
+    <Compile Include="DTO\RootDTO.cs" />
     <Compile Include="FileSystemRoot.cs" />
     <Compile Include="Internal\Response\AddResponse.cs" />
     <Compile Include="Internal\Response\ChangedResponse.cs" />

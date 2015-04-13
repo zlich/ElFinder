@@ -5,6 +5,6 @@ namespace ElFinder
 {
     internal abstract class ResponseBase
     {
-        public abstract void WriteResponse(HttpResponse response);
+        public abstract void WriteResponse(HttpContext context);
     }
 }

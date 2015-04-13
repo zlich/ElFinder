@@ -3,7 +3,7 @@
 namespace ElFinder
 {
     [DataContract]
-    internal class RootDTO : UnitDTO
+    public class RootDTO : UnitDTO
     {
         [DataMember(Name = "volumeId")]
         public string VolumeId { get; set; }

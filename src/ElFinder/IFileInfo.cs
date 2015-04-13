@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.IO;
+using System.Web;
 
 namespace ElFinder
 {
@@ -18,5 +15,9 @@ namespace ElFinder
         string DirectoryName { get; }
 
         IDirectoryInfo Directory { get; }
+
+        void CopyTo(Stream output);
+
+        bool ProcessHttpCache(HttpRequest request, HttpResponse response);
     }
 }

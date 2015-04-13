@@ -3,7 +3,7 @@
 namespace ElFinder
 {
     [DataContract]
-    internal abstract class UnitDTO
+    public abstract class UnitDTO
     {
         /// <summary>
         ///  Name of file/dir. Required

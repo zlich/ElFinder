@@ -3,7 +3,7 @@
 namespace ElFinder
 {
     [DataContract]
-    internal class ImageDTO : FileDTO
+    public class ImageDTO : FileDTO
     {   
         [DataMember(Name = "tmb")]
         public object Thumbnail { get; set; }

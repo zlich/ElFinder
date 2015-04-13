@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
 using System.Web;
@@ -11,10 +10,10 @@ namespace ElFinder
         public Connector(Driver driver)
         {
             Contract.Requires(driver != null);
-            _driver = driver;
+            m_driver = driver;
         }
 
-        public ResponseBase GetResponse(HttpRequest request)
+        internal ResponseBase GetResponse(HttpRequest request)
         {
             NameValueCollection parameters = request.QueryString.Count > 0 ? request.QueryString : request.Form;
             string cmdName = parameters["cmd"];
@@ -29,26 +28,26 @@ namespace ElFinder
                 case "open":
                     if (!string.IsNullOrEmpty(parameters["init"]) && parameters["init"] == "1")
                     {
-                        return _driver.Init(target);
+                        return m_driver.Init(target);
                     }
                     else
                     {
                         if (string.IsNullOrEmpty(target))
                             return Errors.MissedParameter(cmdName);
-                        return _driver.Open(target, !string.IsNullOrEmpty(parameters["tree"]) && parameters["tree"] == "1");
+                        return m_driver.Open(target, !string.IsNullOrEmpty(parameters["tree"]) && parameters["tree"] == "1");
                     }
                 case "file":
                     if (string.IsNullOrEmpty(target))
                         return Errors.MissedParameter(cmdName);
-                    return _driver.File(target, !string.IsNullOrEmpty(parameters["download"]) && parameters["download"] == "1");
+                    return m_driver.File(target, !string.IsNullOrEmpty(parameters["download"]) && parameters["download"] == "1");
                 case "tree":
                     if (string.IsNullOrEmpty(target))
                         return Errors.MissedParameter(cmdName);
-                    return _driver.Tree(target);
+                    return m_driver.Tree(target);
                 case "parents":
                     if (string.IsNullOrEmpty(target))
                         return Errors.MissedParameter(cmdName);
-                    return _driver.Parents(target);
+                    return m_driver.Parents(target);
                 case "mkdir":
                     {
                         if (string.IsNullOrEmpty(target))
@@ -57,7 +56,7 @@ namespace ElFinder
 
                         if (string.IsNullOrEmpty(name))
                             return Errors.MissedParameter("name");
-                        return _driver.MakeDir(target, name);
+                        return m_driver.MakeDir(target, name);
                     }
                 case "mkfile":
                     {
@@ -67,7 +66,7 @@ namespace ElFinder
 
                         if (string.IsNullOrEmpty(name))
                             return Errors.MissedParameter("name");
-                        return _driver.MakeFile(target, name);
+                        return m_driver.MakeFile(target, name);
                     }
                 case "rename":
                     {
@@ -77,23 +76,23 @@ namespace ElFinder
 
                         if (string.IsNullOrEmpty(name))
                             return Errors.MissedParameter("name");
-                        return _driver.Rename(target, name);
+                        return m_driver.Rename(target, name);
                     }
                 case "rm":
                     {
                         IEnumerable<string> targets = GetTargetsArray(request);
                         if (targets == null)
                             Errors.MissedParameter("targets");
-                        return _driver.Remove(targets);
+                        return m_driver.Remove(targets);
                     }
                 case "ls":
                     if (string.IsNullOrEmpty(target))
                         return Errors.MissedParameter(cmdName);
-                    return _driver.List(target);
+                    return m_driver.List(target);
                 case "get":
                     if (string.IsNullOrEmpty(target))
                         return Errors.MissedParameter(cmdName);
-                    return _driver.Get(target);
+                    return m_driver.Get(target);
                 case "put":
                     if (string.IsNullOrEmpty(target))
                         return Errors.MissedParameter(cmdName);
@@ -101,7 +100,7 @@ namespace ElFinder
 
                     if (string.IsNullOrEmpty(target))
                         return Errors.MissedParameter("content");
-                    return _driver.Put(target, content);
+                    return m_driver.Put(target, content);
                 case "paste":
                     {
                         IEnumerable<string> targets = GetTargetsArray(request);
@@ -115,31 +114,31 @@ namespace ElFinder
                         if (string.IsNullOrEmpty(src))
                             return Errors.MissedParameter("dst");
 
-                        return _driver.Paste(src, dst, targets, !string.IsNullOrEmpty(parameters["cut"]) && parameters["cut"] == "1");
+                        return m_driver.Paste(src, dst, targets, !string.IsNullOrEmpty(parameters["cut"]) && parameters["cut"] == "1");
                     }
                 case "upload":
                     if (string.IsNullOrEmpty(target))
                         return Errors.MissedParameter(cmdName);
-                    return _driver.Upload(target, request.Files);
+                    return m_driver.Upload(target, request.Files);
                 case "duplicate":
                     {
                         IEnumerable<string> targets = GetTargetsArray(request);
                         if (targets == null)
                             Errors.MissedParameter("targets");
-                        return _driver.Duplicate(targets);
+                        return m_driver.Duplicate(targets);
                     }
                 case "tmb":
                     {
                         IEnumerable<string> targets = GetTargetsArray(request);
                         if (targets == null)
                             Errors.MissedParameter("targets");
-                        return _driver.Thumbs(targets);
+                        return m_driver.Thumbs(targets);
                     }
                 case "dim":
                     {
                         if (string.IsNullOrEmpty(target))
                             return Errors.MissedParameter(cmdName);
-                        return _driver.Dim(target);
+                        return m_driver.Dim(target);
                     }
                 case "resize":
                     {
@@ -148,11 +147,11 @@ namespace ElFinder
                         switch (parameters["mode"])
                         {
                             case "resize":
-                                return _driver.Resize(target, int.Parse(parameters["width"]), int.Parse(parameters["height"]));
+                                return m_driver.Resize(target, int.Parse(parameters["width"]), int.Parse(parameters["height"]));
                             case "crop":
-                                return _driver.Crop(target, int.Parse(parameters["x"]), int.Parse(parameters["y"]), int.Parse(parameters["width"]), int.Parse(parameters["height"]));
+                                return m_driver.Crop(target, int.Parse(parameters["x"]), int.Parse(parameters["y"]), int.Parse(parameters["width"]), int.Parse(parameters["height"]));
                             case "rotate":
-                                return _driver.Rotate(target, int.Parse(parameters["degree"]));
+                                return m_driver.Rotate(target, int.Parse(parameters["degree"]));
                             default:
                                 break;
                         }
@@ -179,6 +178,6 @@ namespace ElFinder
             return targets;
         }
 
-        private readonly Driver _driver;
+        private readonly Driver m_driver;
     }
 }

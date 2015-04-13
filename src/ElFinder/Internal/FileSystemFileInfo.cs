@@ -11,6 +11,11 @@ namespace ElFinder
             get { return m_info.Name; }
         }
 
+        public string MimeType
+        {
+            get { return GetMimeType(); }
+        }
+
         public string Extension
         {
             get { return m_info.Extension; }
@@ -51,7 +56,7 @@ namespace ElFinder
             response.Name = m_info.Name;
             response.Size = m_info.Length;
             response.UnixTimeStamp = (long)(m_info.LastWriteTimeUtc - UnixOrigin).TotalSeconds;
-            response.Mime = GetMimeType();
+            response.Mime = MimeType;
             response.Hash = Root.VolumeId + Helper.EncodePath(relativePath);
             response.ParentHash = Root.VolumeId + Helper.EncodePath(parentPath.Length > 0 ? parentPath : info.Directory.Name);
             return response;

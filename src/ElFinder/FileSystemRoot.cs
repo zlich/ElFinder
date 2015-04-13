@@ -6,13 +6,7 @@ using System.Threading.Tasks;
 
 namespace ElFinder
 {
-    public interface IFileSystemInfo
+    public class FileSystemRoot
     {
-        string MimeType { get; }
-
-        string Name { get; }
-
-
-        DateTime LastWriteTimeUtc { get; }
     }
 }

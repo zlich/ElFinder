@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace ElFinder
 {
-    public interface IFileInfo : IFileSystemInfo
+    /// <summary>
+    /// Represents a file info
+    /// </summary>
+    public interface IFileInfo : IUnitInfo
     {
         long Length { get; }
 

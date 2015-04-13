@@ -1,13 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace ElFinder
 {    
-    public interface IDirectoryInfo : IFileSystemInfo
+    /// <summary>
+    /// Respresnts a directory info
+    /// </summary>
+    public interface IDirectoryInfo : IUnitInfo
     {
+        /// <summary>
+        /// Gets subdirectories
+        /// </summary>
+        /// <returns>The collection of subdirectories</returns>
         IEnumerable<IDirectoryInfo> GetDirectories();
     }
 }

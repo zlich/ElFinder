@@ -80,6 +80,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
@@ -89,14 +90,36 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DTO\BaseDTO.cs">
+    <Compile Include="Connector.cs" />
+    <Compile Include="Driver.cs" />
+    <Compile Include="Internal\Response\Errors.cs" />
+    <Compile Include="Internal\DTO\UnitDTO.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DTO\DirectoryDTO.cs" />
-    <Compile Include="DTO\FileDTO.cs" />
-    <Compile Include="DTO\ImageDTO.cs" />
-    <Compile Include="DTO\RootDTO.cs" />
-    <Compile Include="IFileSystemInfo.cs" />
+    <Compile Include="Internal\DTO\DirectoryDTO.cs" />
+    <Compile Include="Internal\DTO\FileDTO.cs" />
+    <Compile Include="Internal\DTO\ImageDTO.cs" />
+    <Compile Include="Internal\DTO\RootDTO.cs" />
+    <Compile Include="FileSystemRoot.cs" />
+    <Compile Include="Internal\Response\AddResponse.cs" />
+    <Compile Include="Internal\Response\ChangedResponse.cs" />
+    <Compile Include="Internal\Response\DimResponse.cs" />
+    <Compile Include="Internal\Response\ErrorResponse.cs" />
+    <Compile Include="Internal\Response\GetResponse.cs" />
+    <Compile Include="Internal\Response\JsonResponse.cs" />
+    <Compile Include="Internal\Response\ListResponse.cs" />
+    <Compile Include="Internal\Response\Open\Debug.cs" />
+    <Compile Include="Internal\Response\Open\InitResponse.cs" />
+    <Compile Include="Internal\Response\Open\OpenResponse.cs" />
+    <Compile Include="Internal\Response\Open\OpenResponseBase.cs" />
+    <Compile Include="Internal\Response\Open\Options.cs" />
+    <Compile Include="Internal\Response\RemoveResponse.cs" />
+    <Compile Include="Internal\Response\ReplaceResponse.cs" />
+    <Compile Include="Internal\Response\ResponseBase.cs" />
+    <Compile Include="Internal\Response\ThumbsResponse.cs" />
+    <Compile Include="Internal\Response\TreeResponse.cs" />
+    <Compile Include="IRoot.cs" />
+    <Compile Include="IUnitInfo.cs" />
     <Compile Include="IDirectoryInfo.cs" />
     <Compile Include="IFileInfo.cs" />
     <Compile Include="Internal\FileSystemDirectoryInfo.cs" />
@@ -104,6 +127,7 @@
     <Compile Include="Internal\Helper.cs" />
     <Compile Include="Internal\MimeTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Internal\UnitInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

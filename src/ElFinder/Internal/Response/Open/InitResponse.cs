@@ -16,10 +16,10 @@ namespace ElFinder
         [DataMember(Name = "netDrivers")]
         public IEnumerable<string> NetDrivers { get { return _empty; } }
 
-        public InitResponse(IDirectoryInfo currentWorkingDirectory, Options options)
+        public InitResponse(IDirectoryInfo currentWorkingDirectory)
             : base(currentWorkingDirectory)
         {
-            Options = options;
+            Options = new Options(currentWorkingDirectory);
         }
     }
 }

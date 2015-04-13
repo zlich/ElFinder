@@ -23,8 +23,8 @@ namespace ElFinder
         {
             Contract.Requires(currentWorkingDirectory != null);
             Files = new List<UnitDTO>();
-            CurrentWorkingDirectory = currentWorkingDirectory.ToDTO();
             Debug = new Debug();
+            CurrentWorkingDirectory = currentWorkingDirectory.ToDTO();
         }
     }
 }

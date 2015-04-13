@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using System.IO;
 using System.Linq;
 
@@ -25,6 +24,19 @@ namespace ElFinder
         public IEnumerable<IFileInfo> GetFiles()
         {
             return DirectoryInfo.EnumerateFiles().Select(i => new LocalFileInfo(FileSystemRoot, i));
+        }
+
+        public IEnumerable<IUnitInfo> GetUnits()
+        {
+            return DirectoryInfo.EnumerateFileSystemInfos().Select(i =>
+                {
+                    IUnitInfo result;
+                    if (i is FileInfo)
+                        result = new LocalFileInfo(FileSystemRoot, (FileInfo)i);
+                    else
+                        result = new LocalDirectoryInfo(FileSystemRoot, (DirectoryInfo)i);
+                    return result;
+                });
         }
 
         public override UnitDTO ToDTO()

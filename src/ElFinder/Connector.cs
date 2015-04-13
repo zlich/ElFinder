@@ -98,7 +98,7 @@ namespace ElFinder
                         return Errors.MissedParameter(cmdName);
                     string content = parameters["content"];
 
-                    if (string.IsNullOrEmpty(target))
+                    if (string.IsNullOrEmpty(content))
                         return Errors.MissedParameter("content");
                     return m_driver.Put(target, content);
                 case "paste":
@@ -111,7 +111,7 @@ namespace ElFinder
                             return Errors.MissedParameter("src");
 
                         string dst = parameters["dst"];
-                        if (string.IsNullOrEmpty(src))
+                        if (string.IsNullOrEmpty(dst))
                             return Errors.MissedParameter("dst");
 
                         return m_driver.Paste(src, dst, targets, !string.IsNullOrEmpty(parameters["cut"]) && parameters["cut"] == "1");

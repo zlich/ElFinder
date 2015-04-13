@@ -15,6 +15,7 @@ namespace ElFinder
         {
             get { return m_info.Name; }
         }
+
         public bool Exists 
         {
             get { return m_info.Exists; }
@@ -22,10 +23,7 @@ namespace ElFinder
 
         public string RelativePath
         {
-            get
-            {
-                return m_info.FullName.Substring(m_root.ParentPath.Length);
-            }
+            get { return m_info.FullName.Substring(m_root.ParentPath.Length); }
         }
 
         public bool IsHidden

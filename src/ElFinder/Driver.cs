@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Web;
 using System.Linq;
 using System.Net;
+using System.Diagnostics.Contracts;
 
 namespace ElFinder
 {
@@ -44,15 +45,42 @@ namespace ElFinder
                 return Errors.NotFound();
 
             OpenResponse response = new OpenResponse(directory);
-            response.Files.AddRange(directory.GetFiles().Where(i => !i.IsHidden).Select(i => i.ToDTO()));
-            response.Files.AddRange(directory.GetDirectories().Where(i => !i.IsHidden).Select(i => i.ToDTO()));
+            response.Files.AddRange(directory.GetUnits().Where(i => !i.IsHidden).Select(i => i.ToDTO()));
 
             return response;
         }
 
         internal JsonResponse Init(string target)
         {
-            throw new NotImplementedException();
+            IDirectoryInfo directory;
+            if (string.IsNullOrEmpty(target))
+            {
+                IRoot root = m_roots.FirstOrDefault(r => r.StartPath != null);
+                if (root == null)
+                    root = m_roots.First();
+                directory = root.StartPath ?? root.Directory;
+            }
+            else
+            {
+                directory = ParsePath(target) as IDirectoryInfo;
+            }
+            if (directory == null)
+                return Errors.NotFound();
+
+            InitResponse response = new InitResponse(directory);
+
+            response.Files.AddRange(directory.GetUnits().Where(i => !i.IsHidden).Select(i => i.ToDTO()));
+            response.Files.AddRange(m_roots.Select(i => i.Directory.ToDTO()));
+
+            IRoot currentRoot = directory.Root;
+
+            if (directory.RelativePath != directory.Name)
+                response.Files.AddRange(currentRoot.Directory.GetDirectories().Where(i => !i.IsHidden).Select(i => i.ToDTO()));
+
+            if (currentRoot.AccessManager.MaxUploadSize.HasValue)
+                response.UploadMaxSize = currentRoot.AccessManager.MaxUploadSizeInKb.Value + "K";
+
+            return response;
         }
         internal JsonResponse Parents(string target)
         {
@@ -142,17 +170,13 @@ namespace ElFinder
 
         private IUnitInfo ParsePath(string target)
         {
-            string volumePrefix = null;
-            string pathHash = null;
-            for (int i = 0; i < target.Length; i++)
-            {
-                if (target[i] == '_')
-                {
-                    pathHash = target.Substring(i + 1);
-                    volumePrefix = target.Substring(0, i + 1);
-                    break;
-                }
-            }
+            Contract.Requires(target != null);
+            int separatorIndex = target.IndexOf('_');
+            if (separatorIndex == -1)
+                throw new ArgumentException("Target path must containt a separator between volumeIndex");
+            string volumePrefix = target.Substring(0, separatorIndex);
+            string pathHash = target.Substring(separatorIndex);
+
             IRoot root = m_roots.First(r => r.VolumeId == volumePrefix);
             string relativePath = Helper.DecodePath(pathHash);
             IDirectoryInfo dir = root.GetDirectory(relativePath);

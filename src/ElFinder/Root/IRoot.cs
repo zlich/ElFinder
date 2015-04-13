@@ -11,6 +11,10 @@
 
         string Url { get; set; }
 
+        IDirectoryInfo Directory { get; }
+
+        IDirectoryInfo StartPath { get; }
+
         ThumbnailsManager ThumbnailsManager { get; }
 
         AccessManager AccessManager { get; }

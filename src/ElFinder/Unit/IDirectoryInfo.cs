@@ -16,5 +16,7 @@ namespace ElFinder
         IEnumerable<IDirectoryInfo> GetDirectories();
 
         IEnumerable<IFileInfo> GetFiles();
+
+        IEnumerable<IUnitInfo> GetUnits();
     }
 }

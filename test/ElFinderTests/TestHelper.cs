@@ -14,6 +14,6 @@ namespace ElFinderTests
             return Path.Combine(TestDataPath, localPath);
         }
 
-        private static readonly string TestDataPath = "..\\..\\..\\testData\\";
+        public static readonly string TestDataPath = "..\\..\\..\\testData\\";
     }
 }

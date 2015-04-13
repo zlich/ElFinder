@@ -5,23 +5,18 @@
     /// </summary>
     public interface IRoot
     {
-        string VolumeId { get; internal set; }
+        string VolumeId { get; set; }
 
         string Alias { get; set; }
 
         string Url { get; set; }
 
-        bool IsReadOnly { get; set; }
+        ThumbnailsManager ThumbnailsManager { get; }
 
-        bool IsShowOnly { get; set; }
-
-        bool IsLocked { get; set; }
-
-        int? MaxUploadSize { get; set; }
-
-        bool UploadOverwrite { get; set; }
+        AccessManager AccessManager { get; }
 
         IDirectoryInfo GetDirectory(string relativePath);
+
         IFileInfo GetFile(string relativePath);
     }
 }

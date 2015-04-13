@@ -23,9 +23,17 @@ namespace ElFinder
         string MimeType { get; }
 
         /// <summary>
-        /// Gets 
+        /// Gets a value indicates is unit exists
         /// </summary>
         bool Exists { get; }
+
+        /// <summary>
+        /// Get relative path to root
+        /// </summary>
+        string RelativePath { get; }
+
+
+        bool IsHidden { get; }
 
         /// <summary>
         /// Converts unit to data-trasfer object

@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace ElFinder
 {
-    public class FileSystemRoot
+    public class ThumbnailsManager
     {
+        public string Url { get; set; }
+
+        public int Size { get; set; }
     }
 }

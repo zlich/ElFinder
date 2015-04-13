@@ -11,7 +11,9 @@ namespace ElFinderTests
         public void TestName()
         {
             string name = "testText.txt";
-            FileSystemFileInfo info = new FileSystemFileInfo(TestHelper.GetTestDataPath(name));
+            LocalFileSystemRoot root = new LocalFileSystemRoot(TestHelper.TestDataPath);
+
+            LocalFileInfo info = new LocalFileInfo(root, TestHelper.GetTestDataPath(name));
 
             Assert.AreEqual(name, info.Name);
         }
@@ -20,27 +22,21 @@ namespace ElFinderTests
         public void TestLength()
         {
             string path = TestHelper.GetTestDataPath("testText.txt");
-            FileSystemFileInfo info = new FileSystemFileInfo(path);
+            LocalFileSystemRoot root = new LocalFileSystemRoot(TestHelper.TestDataPath);
+
+            LocalFileInfo info = new LocalFileInfo(root, path);
 
             Assert.AreEqual(new FileInfo(path).Length, info.Length);
         }
 
         [TestMethod]
-        public void TestLastWriteTimeUtc()
-        {
-            string path = TestHelper.GetTestDataPath("testText.txt");
-            FileSystemFileInfo info = new FileSystemFileInfo(path);
-
-            Assert.AreEqual(new FileInfo(path).LastWriteTimeUtc, info.LastWriteTimeUtc);
-        }
-
-        [TestMethod]
         public void TestMimeType()
         {
-            FileSystemFileInfo info = new FileSystemFileInfo("testText.txt");
+            LocalFileSystemRoot root = new LocalFileSystemRoot(TestHelper.TestDataPath);
+            LocalFileInfo info = new LocalFileInfo(root, "testText.txt");
             Assert.AreEqual("text/plain", info.MimeType);
 
-            info = new FileSystemFileInfo("testPicture.jpg");
+            info = new LocalFileInfo(root, "testPicture.jpg");
             Assert.AreEqual("image/jpeg", info.MimeType);
         }
     }

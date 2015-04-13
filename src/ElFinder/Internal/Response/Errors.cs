@@ -21,6 +21,15 @@
         {
             return new ErrorResponse("errAccess");
         }
+        public static ErrorResponse NotFound()
+        {
+            return new ErrorResponse("File not found");
+        }
+        public static ErrorResponse FolderLocked(string forderName)
+        {
+            return new ErrorResponse("errLocked", forderName);
+        }
+
         public static ErrorResponse MissedParameter(string command)
         {
             return new ErrorResponse("errCmdParams", command);

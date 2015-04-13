@@ -12,8 +12,6 @@ namespace ElFinder
 
         string Extension { get; }
 
-        string DirectoryName { get; }
-
         IDirectoryInfo Directory { get; }
 
         void CopyTo(Stream output);

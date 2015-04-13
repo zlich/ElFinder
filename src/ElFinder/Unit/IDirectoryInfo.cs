@@ -7,10 +7,14 @@ namespace ElFinder
     /// </summary>
     public interface IDirectoryInfo : IUnitInfo
     {
+        IDirectoryInfo Parent { get; }
+
         /// <summary>
         /// Gets subdirectories
         /// </summary>
         /// <returns>The collection of subdirectories</returns>
         IEnumerable<IDirectoryInfo> GetDirectories();
+
+        IEnumerable<IFileInfo> GetFiles();
     }
 }

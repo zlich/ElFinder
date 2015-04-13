@@ -39,18 +39,14 @@ namespace ElFinder
 
         internal JsonResponse Open(string target, bool tree)
         {
-            FullPath fullPath = ParsePath(target);
-            OpenResponse response = new OpenResponse(DTOBase.Create(fullPath.Directory, fullPath.Root), fullPath);
-            foreach (FileInfo item in fullPath.Directory.GetFiles())
-            {
-                if ((item.Attributes & FileAttributes.Hidden) != FileAttributes.Hidden)
-                    response.Files.Add(DTOBase.Create(item, fullPath.Root));
-            }
-            foreach (DirectoryInfo item in fullPath.Directory.GetDirectories())
-            {
-                if ((item.Attributes & FileAttributes.Hidden) != FileAttributes.Hidden)
-                    response.Files.Add(DTOBase.Create(item, fullPath.Root));
-            }
+            IDirectoryInfo directory = ParsePath(target) as IDirectoryInfo;
+            if (directory == null)
+                return Errors.NotFound();
+
+            OpenResponse response = new OpenResponse(directory);
+            response.Files.AddRange(directory.GetFiles().Where(i => !i.IsHidden).Select(i => i.ToDTO()));
+            response.Files.AddRange(directory.GetDirectories().Where(i => !i.IsHidden).Select(i => i.ToDTO()));
+
             return response;
         }
 
@@ -137,7 +133,7 @@ namespace ElFinder
                 IFileInfo file = (IFileInfo)unit;
                 if (!file.Exists)
                     return new HttpStatusCodeResponse(HttpStatusCode.NotFound, "File not found");
-                if (file.Root.IsShowOnly)
+                if (file.Root.AccessManager.IsShowOnly)
                     return new HttpStatusCodeResponse(HttpStatusCode.Forbidden, "Access denied. Volume is for show only");
 
                 return new DownloadResponse(file, download);
@@ -159,13 +155,11 @@ namespace ElFinder
             }
             IRoot root = m_roots.First(r => r.VolumeId == volumePrefix);
             string relativePath = Helper.DecodePath(pathHash);
-            //string dirUrl = path != root.Directory.Name ? path : string.Empty;
             IDirectoryInfo dir = root.GetDirectory(relativePath);
             if (dir.Exists)
                 return dir;
             else
                 return root.GetFile(relativePath);
-                //var file = new FileInfo(root.Directory.FullName + dirUrl);
         }
 
         private readonly List<IRoot> m_roots;

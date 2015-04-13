@@ -90,8 +90,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccessManager.cs" />
     <Compile Include="Connector.cs" />
     <Compile Include="Driver.cs" />
+    <Compile Include="Internal\HttpCacheHelper.cs" />
     <Compile Include="Internal\Response\DownloadResponse.cs" />
     <Compile Include="Internal\Response\Errors.cs" />
     <Compile Include="DTO\UnitDTO.cs">
@@ -101,7 +103,8 @@
     <Compile Include="DTO\FileDTO.cs" />
     <Compile Include="DTO\ImageDTO.cs" />
     <Compile Include="DTO\RootDTO.cs" />
-    <Compile Include="FileSystemRoot.cs" />
+    <Compile Include="Internal\Response\Open\Archive.cs" />
+    <Compile Include="Root\LocalFileSystemRoot.cs" />
     <Compile Include="Internal\Response\AddResponse.cs" />
     <Compile Include="Internal\Response\ChangedResponse.cs" />
     <Compile Include="Internal\Response\DimResponse.cs" />
@@ -120,16 +123,18 @@
     <Compile Include="Internal\Response\ResponseBase.cs" />
     <Compile Include="Internal\Response\ThumbsResponse.cs" />
     <Compile Include="Internal\Response\TreeResponse.cs" />
-    <Compile Include="IRoot.cs" />
-    <Compile Include="IUnitInfo.cs" />
-    <Compile Include="IDirectoryInfo.cs" />
-    <Compile Include="IFileInfo.cs" />
-    <Compile Include="Internal\FileSystemDirectoryInfo.cs" />
-    <Compile Include="Internal\FileSystemFileInfo.cs" />
+    <Compile Include="Root\IRoot.cs" />
+    <Compile Include="ThumbnailsManager.cs" />
+    <Compile Include="Unit\IUnitInfo.cs" />
+    <Compile Include="Unit\IDirectoryInfo.cs" />
+    <Compile Include="Unit\IFileInfo.cs" />
+    <Compile Include="Internal\LocalFileSystem\LocalDirectoryInfo.cs" />
+    <Compile Include="Internal\LocalFileSystem\LocalFileInfo.cs" />
     <Compile Include="Internal\Helper.cs" />
     <Compile Include="Internal\MimeTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Internal\UnitInfo.cs" />
+    <Compile Include="Internal\LocalFileSystem\LocalUnitInfo.cs" />
+    <Compile Include="Root\RemoteFileSystemRoot.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

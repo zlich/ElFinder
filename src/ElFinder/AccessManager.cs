@@ -11,9 +11,7 @@ namespace ElFinder
         /// <summary>
         /// Get or sets if root for read only (users can't change file)
         /// </summary>
-
         public bool IsReadOnly { get; set; }
-
         
 
         public bool IsShowOnly { get; set; }
@@ -33,7 +31,7 @@ namespace ElFinder
             get { return m_maxUploadSize; }
             set
             {
-                if (value.HasValue && value.Value < 0)
+                if (value < 0)
                     throw new ArgumentException("Max upload size can not be less than zero", "value");
                 m_maxUploadSize = value;
             }
@@ -45,11 +43,8 @@ namespace ElFinder
         /// </summary>
         public double? MaxUploadSizeInKb
         {
-            get { return m_maxUploadSize.HasValue ? (double?)(m_maxUploadSize.Value / 1024.0) : null; }
-            set
-            {
-                MaxUploadSize = value.HasValue ? (int?)(value * 1024) : null;
-            }
+            get { return MaxUploadSize / 1024.0; }
+            set { MaxUploadSize = (int?)(value * 1024); }
         }
 
         /// <summary>
@@ -58,11 +53,8 @@ namespace ElFinder
         /// </summary>
         public double? MaxUploadSizeInMb
         {
-            get { return MaxUploadSizeInKb.HasValue ? (double?)(MaxUploadSizeInKb.Value / 1024.0) : null; }
-            set
-            {
-                MaxUploadSizeInKb = value.HasValue ? (int?)(value * 1024) : null;
-            }
+            get { return MaxUploadSizeInKb/ 1024.0; }
+            set { MaxUploadSizeInKb = (int?)(value * 1024); }
         }
 
         private int? m_maxUploadSize;

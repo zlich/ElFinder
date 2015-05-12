@@ -19,23 +19,21 @@ namespace ElFinder
             {
                 modifyDate = DateTime.UtcNow;
             }
-            string eTag = GetFileETag(filename, lastWriteTime);            
+            string eTag = GetFileETag(filename, lastWriteTime);
+            response.Cache.SetCacheability(HttpCacheability.Public);
+            response.Cache.SetLastModified(lastWriteTime);
+            response.Cache.SetETag(eTag);
+
             if (!IsFileModified(lastWriteTime, eTag, request))
             {
                 response.StatusCode = (int)System.Net.HttpStatusCode.NotModified;
                 response.StatusDescription = "Not Modified";
                 response.AddHeader("Content-Length", "0");
-                response.Cache.SetCacheability(HttpCacheability.Public);
-                response.Cache.SetLastModified(lastWriteTime);
-                response.Cache.SetETag(eTag);
                 return true;
             }
             else
             {
                 response.Cache.SetAllowResponseInBrowserHistory(true);
-                response.Cache.SetCacheability(HttpCacheability.Public);
-                response.Cache.SetLastModified(lastWriteTime);
-                response.Cache.SetETag(eTag);
                 return false;
             }
         }

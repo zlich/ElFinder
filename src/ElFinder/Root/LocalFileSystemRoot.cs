@@ -53,7 +53,7 @@ namespace ElFinder
         /// </summary>
         public IDirectoryInfo StartPath
         {
-            get { return new LocalDirectoryInfo(this, m_startPath); }
+            get { return m_startPath != null ? new LocalDirectoryInfo(this, m_startPath) : null; }
         }
 
         public ThumbnailsManager ThumbnailsManager

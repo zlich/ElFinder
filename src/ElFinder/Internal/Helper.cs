@@ -1,8 +1,4 @@
-﻿using System;
-using System.Diagnostics.Contracts;
-using System.IO;
-using System.Security.Cryptography;
-using System.Text;
+﻿using System.Diagnostics.Contracts;
 using System.Web;
 
 namespace ElFinder

@@ -23,14 +23,24 @@ namespace ElFinder
 
         public string RelativePath
         {
-            get { return m_info.FullName.Substring(m_root.ParentPath.Length); }
+            get
+            {
+                LocalDirectoryInfo dir = (LocalDirectoryInfo)m_root.Directory;
+                string dirPath = dir.Info.FullName;
+                int length = dirPath.Length;
+                if (dirPath[length - 1] == '\\')
+                    length--;
+                string path = m_info.FullName.Substring(length);
+                if (m_info is DirectoryInfo && path[path.Length - 1] == '\\')
+                    path = path.Substring(0, path.Length - 1);
+                return path;
+            }
         }
 
         public bool IsHidden
         {
             get { return (m_info.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden; }
         }
-
 
         public abstract string MimeType { get; }
 

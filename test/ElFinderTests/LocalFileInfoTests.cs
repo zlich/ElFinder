@@ -5,7 +5,7 @@ using System.IO;
 namespace ElFinderTests
 {
     [TestClass]
-    public class FileSystemInfoTests
+    public class LocalFileInfoTests
     {
         [TestMethod]
         public void TestName()
@@ -105,17 +105,36 @@ namespace ElFinderTests
             Assert.AreEqual(false, info.Exists);
         }
 
-        //[TestMethod]
-        //public void TestCopyTo()
-        //{
-        //    string path = TestHelper.GetTestDataPath("testText.txt");
-        //    LocalFileSystemRoot root = new LocalFileSystemRoot(TestHelper.TestDataPath);
-        //    LocalFileInfo info = new LocalFileInfo(root, path);
+        [TestMethod]
+        public void TestRelativePath()
+        {
+            string path = TestHelper.GetTestDataPath("testText.txt");
+            LocalFileSystemRoot root = new LocalFileSystemRoot(TestHelper.TestDataPath);
 
-        //    using (MemoryStream stream = new MemoryStream())
-        //    {
-        //        info.CopyTo(stream);
-        //    }
-        //}
+            LocalFileInfo info = new LocalFileInfo(root, path);
+            Assert.AreEqual("\\testText.txt", info.RelativePath);
+        }
+
+        [TestMethod]
+        public void TestRoot()
+        {
+            string path = TestHelper.GetTestDataPath("testText.txt");
+            LocalFileSystemRoot root = new LocalFileSystemRoot(TestHelper.TestDataPath);
+            LocalFileInfo info = new LocalFileInfo(root, path);
+            Assert.AreEqual(root, info.Root);
+        }
+
+        [TestMethod]
+        public void TestCopyTo()
+        {
+            string path = TestHelper.GetTestDataPath("testText.txt");
+            LocalFileSystemRoot root = new LocalFileSystemRoot(TestHelper.TestDataPath);
+            LocalFileInfo info = new LocalFileInfo(root, path);
+            using (MemoryStream stream = new MemoryStream())
+            {
+                info.CopyTo(stream);
+                Assert.AreEqual(TestHelper.GetFileHash(path), TestHelper.GetDataHash(stream.ToArray()));
+            }
+        }
     }
 }

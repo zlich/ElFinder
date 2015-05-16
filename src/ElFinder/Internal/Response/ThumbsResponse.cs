@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace ElFinder.Response
+namespace ElFinder
 {
     [DataContract]
     internal class ThumbsResponse : JsonResponse

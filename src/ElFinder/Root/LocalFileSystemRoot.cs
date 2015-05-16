@@ -94,6 +94,16 @@ namespace ElFinder
             return new LocalFileInfo(this, Path.Combine(m_directoryPath, NormalizeRelativePath(relativePath)));
         }
 
+        public IDirectoryInfo CreateDirectory(string relativeDir, string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IFileInfo CreateFile(string relativeDir, string name)
+        {
+            throw new NotImplementedException();
+        }
+
         public LocalFileSystemRoot(DirectoryInfo directory, string url)
         {
             if (directory == null)
@@ -137,13 +147,6 @@ namespace ElFinder
                 length--;
             return path.Substring(start, length);
         }
-
-        //internal string ParentPath
-        //{
-        //    get { return m_parentPath; }
-        //}
-
-        //private readonly string m_parentPath;
         private readonly DirectoryInfo m_directory;
         private readonly string m_directoryPath;
 

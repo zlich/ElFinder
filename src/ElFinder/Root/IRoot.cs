@@ -22,5 +22,9 @@
         IDirectoryInfo GetDirectory(string relativePath);
 
         IFileInfo GetFile(string relativePath);
+
+        IDirectoryInfo CreateDirectory(string relativeDir, string name);
+
+        IFileInfo CreateFile(string relativeDir, string name);
     }
 }

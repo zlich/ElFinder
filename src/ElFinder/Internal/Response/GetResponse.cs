@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics.Contracts;
 using System.Runtime.Serialization;
 
-namespace ElFinder.Response
+namespace ElFinder
 {
     [DataContract]
     internal class GetResponse : JsonResponse

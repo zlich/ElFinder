@@ -114,20 +114,49 @@ namespace ElFinder
 
         internal JsonResponse Tree(string target)
         {
-            throw new NotImplementedException();
+            IDirectoryInfo directory = ParsePath(target) as IDirectoryInfo;
+            if (directory == null)
+                return Errors.NotFound();
+            TreeResponse answer = new TreeResponse();
+            foreach (IDirectoryInfo item in directory.GetDirectories())
+            {
+                if (!item.IsHidden)
+                    answer.Tree.Add(item.ToDTO());
+            }
+            return answer;
         }
+
         internal JsonResponse List(string target)
         {
-            throw new NotImplementedException();
+            IDirectoryInfo directory = ParsePath(target) as IDirectoryInfo;
+            if (directory == null)
+                return Errors.NotFound();
+            ListResponse answer = new ListResponse();
+            foreach (IUnitInfo item in directory.GetUnits())
+            {
+                answer.List.Add(item.Name);
+            }
+            return answer;
         }
+
         internal JsonResponse MakeDir(string target, string name)
         {
-            throw new NotImplementedException();
+            IDirectoryInfo directory = ParsePath(target) as IDirectoryInfo;
+            if (directory == null)
+                return Errors.NotFound();
+            IDirectoryInfo newDir = directory.Root.CreateDirectory(directory.RelativePath, name);
+            return new AddResponse(newDir);
         }
+
         internal JsonResponse MakeFile(string target, string name)
         {
-            throw new NotImplementedException();
+            IDirectoryInfo directory = ParsePath(target) as IDirectoryInfo;
+            if (directory == null)
+                return Errors.NotFound();
+            IFileInfo newFile = directory.Root.CreateFile(directory.RelativePath, name);
+            return new AddResponse(newFile);
         }
+
         internal JsonResponse Rename(string target, string name)
         {
             throw new NotImplementedException();

@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using System.Runtime.Serialization;
 
-namespace ElFinder.Response
+namespace ElFinder
 {
     [DataContract]
     internal class DimResponse : JsonResponse

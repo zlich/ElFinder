@@ -1,7 +1,7 @@
 ﻿namespace ElFinder
 {
     /// <summary>
-    /// Represents factory for errors
+    /// Represents factory for errors.
     /// </summary>
     internal static class Errors
     {
@@ -29,7 +29,6 @@
         {
             return new ErrorResponse("errLocked", forderName);
         }
-
         public static ErrorResponse MissedParameter(string command)
         {
             return new ErrorResponse("errCmdParams", command);

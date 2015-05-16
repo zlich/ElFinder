@@ -41,49 +41,34 @@ namespace ElFinder
 
         public override UnitDTO ToDTO()
         {
-            if (RelativePath == Name)
+            UnitDTO response;
+            bool hasSubdirs = DirectoryInfo.EnumerateDirectories().Any(i => (i.Attributes & FileAttributes.Hidden) != FileAttributes.Hidden);
+            if (RelativePath == string.Empty)
             {
-                bool hasSubdirs = false;
-                foreach (DirectoryInfo item in DirectoryInfo.EnumerateDirectories())
+                response = new RootDTO()
                 {
-                    if ((item.Attributes & FileAttributes.Hidden) != FileAttributes.Hidden)
-                    {
-                        hasSubdirs = true;
-                        break;
-                    }
-                }
-                RootDTO response = new RootDTO()
-                {
-                    Mime = MimeType,
-                    Dirs = hasSubdirs ? (byte)1 : (byte)0,
-                    Hash = Root.VolumeId + Helper.EncodePath(Name),
-                    Read = 1,
-                    Write = (byte)(Root.AccessManager.IsReadOnly ? 0 : 1),
-                    Locked = (byte)(Root.AccessManager.IsLocked ? 1 : 0),
-                    Name = Root.Alias,
-                    Size = 0,
-                    UnixTimeStamp = (long)(DirectoryInfo.LastWriteTimeUtc - UnixOrigin).TotalSeconds,
+                    ContainsChildDirs = hasSubdirs ? (byte)1 : (byte)0,
+                    Name = Root.Alias ?? Name,
                     VolumeId = Root.VolumeId
                 };
-                return response;
             }
             else
             {
-                DirectoryDTO response = new DirectoryDTO()
+                response = new DirectoryDTO()
                 {
-                    Mime = MimeType,
-                    ContainsChildDirs = DirectoryInfo.EnumerateDirectories().Any() ? (byte)1 : (byte)0,
-                    Hash = Root.VolumeId + Helper.EncodePath(RelativePath),
-                    Read = 1,
-                    Write = (byte)(Root.AccessManager.IsReadOnly ? 0 : 1),
-                    Locked = (byte)(Root.AccessManager.IsLocked ? 1 : 0),
-                    Size = 0,
+                    ContainsChildDirs = hasSubdirs ? (byte)1 : (byte)0,
                     Name = Name,
-                    UnixTimeStamp = (long)(DirectoryInfo.LastWriteTimeUtc - UnixOrigin).TotalSeconds,
                     ParentHash = Root.VolumeId + Helper.EncodePath(Parent.RelativePath)
                 };
-                return response;
             }
+            response.Mime = MimeType;
+            response.Read = 1;
+            response.Write = (byte)(Root.AccessManager.IsReadOnly ? 0 : 1);
+            response.Locked = (byte)(Root.AccessManager.IsLocked ? 1 : 0);
+            response.Hash = Root.VolumeId + Helper.EncodePath(RelativePath);
+            response.UnixTimeStamp = (long)(DirectoryInfo.LastWriteTimeUtc - UnixOrigin).TotalSeconds;
+            response.Size = 0;
+            return response;
         }
 
 

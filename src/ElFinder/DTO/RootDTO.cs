@@ -9,6 +9,6 @@ namespace ElFinder
         public string VolumeId { get; set; }
 
         [DataMember(Name = "dirs")]
-        public byte Dirs { get; set; }
+        public byte ContainsChildDirs { get; set; }
     }
 }

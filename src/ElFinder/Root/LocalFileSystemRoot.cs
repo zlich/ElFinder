@@ -126,6 +126,8 @@ namespace ElFinder
         {
             int start = 0;
             int length = path.Length;
+            if (path.Length == 0)
+                return string.Empty;
             if (path[0] == '/' || path[0] == '\\')
             {
                 start = 1;

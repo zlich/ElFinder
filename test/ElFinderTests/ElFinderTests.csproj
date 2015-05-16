@@ -50,6 +50,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="DriverTests.cs" />
     <Compile Include="LocalDirectoryInfoTests.cs" />
     <Compile Include="LocalFileSystemRootTests.cs" />
     <Compile Include="LocalFileInfoTests.cs" />

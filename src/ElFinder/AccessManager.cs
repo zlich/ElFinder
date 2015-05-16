@@ -12,7 +12,6 @@ namespace ElFinder
         /// Get or sets if root for read only (users can't change file)
         /// </summary>
         public bool IsReadOnly { get; set; }
-        
 
         public bool IsShowOnly { get; set; }
 
@@ -20,7 +19,6 @@ namespace ElFinder
         /// Get or sets if root is locked (user can't remove, rename or delete files or subdirectories)  
         /// </summary>
         public bool IsLocked { get; set; }
-
 
         /// <summary>
         /// Get or sets maximum upload file size. This size is per files in bytes. 

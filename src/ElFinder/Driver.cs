@@ -4,6 +4,7 @@ using System.Web;
 using System.Linq;
 using System.Net;
 using System.Diagnostics.Contracts;
+using System.Collections.ObjectModel;
 
 namespace ElFinder
 {
@@ -12,9 +13,9 @@ namespace ElFinder
         /// <summary>
         /// Gets roots array.
         /// </summary>
-        public IRoot[] Roots
+        public ReadOnlyCollection<IRoot> Roots
         {
-            get { return m_roots.ToArray(); }
+            get { return m_roots.AsReadOnly(); }
         }
 
         /// <summary>
@@ -82,10 +83,35 @@ namespace ElFinder
 
             return response;
         }
+        
         internal JsonResponse Parents(string target)
         {
-            throw new NotImplementedException();
+            IDirectoryInfo directory = ParsePath(target) as IDirectoryInfo;
+            if (directory == null)
+                return Errors.NotFound();
+            TreeResponse answer = new TreeResponse();
+            if (directory.RelativePath == string.Empty)
+            {
+                answer.Tree.Add(directory.ToDTO());
+            }
+            else
+            {
+                foreach (IDirectoryInfo item in directory.Parent.GetDirectories())
+                {
+                    answer.Tree.Add(item.ToDTO());
+                }
+
+                IDirectoryInfo parent = directory.Parent;
+                while (parent.RelativePath != string.Empty)
+                {
+                    answer.Tree.Add(parent.ToDTO());
+                    parent = parent.Parent;
+                }
+                answer.Tree.Add(parent.ToDTO());
+            }
+            return answer;
         }
+
         internal JsonResponse Tree(string target)
         {
             throw new NotImplementedException();
@@ -174,6 +200,7 @@ namespace ElFinder
             int separatorIndex = target.IndexOf('_');
             if (separatorIndex == -1)
                 throw new ArgumentException("Target path must containt a separator between volumeIndex");
+            separatorIndex++;
             string volumePrefix = target.Substring(0, separatorIndex);
             string pathHash = target.Substring(separatorIndex);
 

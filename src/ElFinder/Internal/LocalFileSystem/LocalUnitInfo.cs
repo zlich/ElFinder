@@ -31,7 +31,7 @@ namespace ElFinder
                 if (dirPath[length - 1] == '\\')
                     length--;
                 string path = m_info.FullName.Substring(length);
-                if (m_info is DirectoryInfo && path[path.Length - 1] == '\\')
+                if (m_info is DirectoryInfo && path.Length > 0 && path[path.Length - 1] == '\\')
                     path = path.Substring(0, path.Length - 1);
                 return path;
             }

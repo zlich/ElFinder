@@ -1,24 +1,23 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ElFinder;
+﻿using ElFinder;
+using NUnit.Framework;
 using System.IO;
 
 namespace ElFinderTests
 {
-    [TestClass]
+    [TestFixture]
     public class LocalFileInfoTests
     {
-        [TestMethod]
+        [Test]
         public void TestName()
         {
             string name = "testText.txt";
             LocalFileSystemRoot root = new LocalFileSystemRoot(TestHelper.TestDataPath);
-
             LocalFileInfo info = new LocalFileInfo(root, TestHelper.GetTestDataPath(name));
 
             Assert.AreEqual(name, info.Name);
         }
 
-        [TestMethod]
+        [Test]
         public void TestLength()
         {
             string path = TestHelper.GetTestDataPath("testText.txt");
@@ -29,7 +28,7 @@ namespace ElFinderTests
             Assert.AreEqual(new FileInfo(path).Length, info.Length);
         }
 
-        [TestMethod]
+        [Test]
         public void TestMimeType()
         {
             string path = TestHelper.GetTestDataPath("testText.txt");
@@ -47,7 +46,7 @@ namespace ElFinderTests
             Assert.AreEqual("unknown", info.MimeType);
         }
 
-        [TestMethod]
+        [Test]
         public void TestExtension()
         {
             string path = TestHelper.GetTestDataPath("testText.txt");
@@ -65,7 +64,7 @@ namespace ElFinderTests
             Assert.AreEqual("", info.Extension);
         }
 
-        [TestMethod]
+        [Test]
         public void TestDirectory()
         {
             string path = TestHelper.GetTestDataPath("testText.txt");
@@ -77,7 +76,7 @@ namespace ElFinderTests
             Assert.AreEqual(dir.Name, info.Directory.Name);
         }
 
-        [TestMethod]
+        [Test]
         public void TestIsHidden()
         {
             string path = TestHelper.GetTestDataPath("testText.txt");
@@ -91,7 +90,7 @@ namespace ElFinderTests
             Assert.AreEqual(true, info.IsHidden);
         }
 
-        [TestMethod]
+        [Test]
         public void TestExists()
         {
             string path = TestHelper.GetTestDataPath("testText.txt");
@@ -105,7 +104,7 @@ namespace ElFinderTests
             Assert.AreEqual(false, info.Exists);
         }
 
-        [TestMethod]
+        [Test]
         public void TestRelativePath()
         {
             string path = TestHelper.GetTestDataPath("testText.txt");
@@ -115,7 +114,7 @@ namespace ElFinderTests
             Assert.AreEqual("\\testText.txt", info.RelativePath);
         }
 
-        [TestMethod]
+        [Test]
         public void TestRoot()
         {
             string path = TestHelper.GetTestDataPath("testText.txt");
@@ -124,7 +123,7 @@ namespace ElFinderTests
             Assert.AreEqual(root, info.Root);
         }
 
-        [TestMethod]
+        [Test]
         public void TestCopyTo()
         {
             string path = TestHelper.GetTestDataPath("testText.txt");

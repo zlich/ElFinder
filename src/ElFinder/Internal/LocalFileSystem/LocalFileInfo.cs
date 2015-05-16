@@ -66,20 +66,21 @@ namespace ElFinder
 
         public void CopyTo(Stream output)
         {
-            Contract.Requires(output != null);
+            if (output == null)
+                throw new ArgumentNullException("output");
             using (FileStream file = FileInfo.OpenRead())
             {
                 file.CopyTo(output);
             }
         }
 
-        public bool ProcessHttpCache(HttpRequest request, HttpResponse response)
+        public bool IsFileFromCache(HttpRequest request, HttpResponse response)
         {
             return HttpCacheHelper.IsFileFromCache(Name, FileInfo.LastWriteTimeUtc, request, response);
         }
 
         public LocalFileInfo(LocalFileSystemRoot root, string fileName)
-            : base(root, new FileInfo(fileName)) { }
+            : this(root, new FileInfo(fileName)) { }
 
         public LocalFileInfo(LocalFileSystemRoot root, FileInfo info)
             : base(root, info) { }

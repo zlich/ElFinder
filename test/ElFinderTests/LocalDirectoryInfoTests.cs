@@ -1,15 +1,14 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ElFinder;
-using System.IO;
+﻿using ElFinder;
 using System.Linq;
 using System.Collections.Generic;
+using NUnit.Framework;
 
 namespace ElFinderTests
 {
-    [TestClass]
+    [TestFixture]
     public class LocalDirectoryInfoTests
     {
-        [TestMethod]
+        [Test]
         public void TestName()
         {
             string name = "subfolder";
@@ -18,7 +17,7 @@ namespace ElFinderTests
             Assert.AreEqual(name, info.Name);
         }
 
-        [TestMethod]
+        [Test]
         public void TestMimeType()
         {
             string name = "subfolder";
@@ -27,7 +26,7 @@ namespace ElFinderTests
             Assert.AreEqual("directory", info.MimeType);
         }
 
-        [TestMethod]
+        [Test]
         public void TestParent()
         {
             string path = TestHelper.GetTestDataPath("subfolder/1");
@@ -38,7 +37,7 @@ namespace ElFinderTests
             Assert.AreEqual(info.Parent.RelativePath, parent.RelativePath);
         }
 
-        [TestMethod]
+        [Test]
         public void TestIsHidden()
         {
             string path = TestHelper.GetTestDataPath("subfolder");
@@ -52,7 +51,7 @@ namespace ElFinderTests
             Assert.AreEqual(true, info.IsHidden);
         }
 
-        [TestMethod]
+        [Test]
         public void TestExists()
         {
             string path = TestHelper.GetTestDataPath("subfolder");
@@ -66,7 +65,7 @@ namespace ElFinderTests
             Assert.AreEqual(false, info.Exists);
         }
 
-        [TestMethod]
+        [Test]
         public void TestRelativePath()
         {
             LocalFileSystemRoot root = new LocalFileSystemRoot(TestHelper.TestDataPath);
@@ -88,7 +87,7 @@ namespace ElFinderTests
             Assert.AreEqual("\\subfolder\\2", info.RelativePath);
         }
 
-        [TestMethod]
+        [Test]
         public void TestRoot()
         {            
             LocalFileSystemRoot root = new LocalFileSystemRoot(TestHelper.TestDataPath);
@@ -97,7 +96,7 @@ namespace ElFinderTests
             Assert.AreEqual(root, info.Root);
         }
 
-        [TestMethod]
+        [Test]
         public void TestGetDirectories()
         {
             LocalFileSystemRoot root = new LocalFileSystemRoot(TestHelper.TestDataPath);
@@ -109,7 +108,7 @@ namespace ElFinderTests
             Assert.AreEqual("2", dirs[1].Name);
         }
 
-        [TestMethod]
+        [Test]
         public void TestGetUnits()
         {
             LocalFileSystemRoot root = new LocalFileSystemRoot(TestHelper.TestDataPath);
@@ -122,7 +121,7 @@ namespace ElFinderTests
             Assert.AreEqual("subfolder file.txt", units[2].Name);
         }
 
-        [TestMethod]
+        [Test]
         public void TestGetFiles()
         {
             LocalFileSystemRoot root = new LocalFileSystemRoot(TestHelper.TestDataPath);

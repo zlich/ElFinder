@@ -88,7 +88,7 @@ namespace ElFinder
 
 
         public LocalDirectoryInfo(LocalFileSystemRoot root, string fullPath)
-            : base(root, new DirectoryInfo(fullPath)) { }
+            : this(root, new DirectoryInfo(fullPath)) { }
 
         public LocalDirectoryInfo(LocalFileSystemRoot root, DirectoryInfo info)
             : base(root, info) { }

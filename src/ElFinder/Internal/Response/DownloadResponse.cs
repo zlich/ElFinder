@@ -15,7 +15,7 @@ namespace ElFinder
         {
             HttpRequest request = context.Request;
             HttpResponse response = context.Response;
-            if (!m_fileInfo.ProcessHttpCache(request, response))
+            if (!m_fileInfo.IsFileFromCache(request, response))
             {
                 string fileName;
                 string fileNameEncoded = HttpUtility.UrlEncode(m_fileInfo.Name);

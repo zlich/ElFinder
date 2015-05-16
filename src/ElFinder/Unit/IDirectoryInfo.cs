@@ -3,31 +3,31 @@
 namespace ElFinder
 {    
     /// <summary>
-    /// Respresnts a directory info
+    /// Respresnts a directory info.
     /// </summary>
     public interface IDirectoryInfo : IUnitInfo
     {
         /// <summary>
-        /// Gets parent directory or <c>null</c> if directory is root
+        /// Gets parent directory or <c>null</c> if directory is root.
         /// </summary>
         IDirectoryInfo Parent { get; }
 
         /// <summary>
-        /// Gets subdirectories
+        /// Gets subdirectories.
         /// </summary>
-        /// <returns>The collection of subdirectories</returns>
+        /// <returns>The collection of subdirectories.</returns>
         IEnumerable<IDirectoryInfo> GetDirectories();
 
         /// <summary>
-        /// Gets files
+        /// Gets files.
         /// </summary>
-        /// <returns>Collection of files</returns>
+        /// <returns>The collection of files.</returns>
         IEnumerable<IFileInfo> GetFiles();
 
         /// <summary>
-        /// Gets files and directories
+        /// Gets files and directories.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The collection of all units.</returns>
         IEnumerable<IUnitInfo> GetUnits();
     }
 }

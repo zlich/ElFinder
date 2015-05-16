@@ -32,7 +32,9 @@ namespace ElFinder
         /// </summary>
         string RelativePath { get; }
 
-
+        /// <summary>
+        /// Gets a value indicates is unit hidden
+        /// </summary>
         bool IsHidden { get; }
 
         /// <summary>

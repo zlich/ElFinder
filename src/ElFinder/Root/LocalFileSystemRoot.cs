@@ -53,7 +53,21 @@ namespace ElFinder
         /// </summary>
         public IDirectoryInfo StartPath
         {
-            get { return m_startPath != null ? new LocalDirectoryInfo(this, m_startPath) : null; }
+            get { return m_startDirectory; }
+            set
+            {
+                if (value == null)
+                    m_startDirectory = null;
+                else
+                {
+                    if (value.Root != this)
+                        throw new ArgumentException("Start directory must be from the same root");
+                    LocalDirectoryInfo dir = (LocalDirectoryInfo)value;
+                    if (!dir.Exists)
+                        throw new ArgumentException("Start directory must exist");
+                    m_startDirectory = dir;
+                }
+            }
         }
 
         public ThumbnailsManager ThumbnailsManager
@@ -68,12 +82,16 @@ namespace ElFinder
 
         public IDirectoryInfo GetDirectory(string relativePath)
         {
-            throw new NotImplementedException();
+            if (relativePath == null)
+                throw new ArgumentNullException();
+            return new LocalDirectoryInfo(this, Path.Combine(m_directoryPath, NormalizeRelativePath(relativePath)));
         }
 
         public IFileInfo GetFile(string relativePath)
         {
-            throw new NotImplementedException();
+            if (relativePath == null)
+                throw new ArgumentNullException();
+            return new LocalFileInfo(this, Path.Combine(m_directoryPath, NormalizeRelativePath(relativePath)));
         }
 
         public LocalFileSystemRoot(DirectoryInfo directory, string url)
@@ -83,8 +101,12 @@ namespace ElFinder
             if (!directory.Exists)
                 throw new ArgumentException("Root directory must exist", "directory");
 
-            m_parentPath = directory.Parent != null ? directory.Parent.FullName : string.Empty;
+            //m_parentPath = directory.Parent != null ? directory.Parent.FullName : string.Empty;
             m_directory = directory;
+            m_directoryPath = directory.FullName;
+            int length = m_directoryPath.Length;
+            if (m_directoryPath[length - 1] == '\\')
+                m_directoryPath = m_directoryPath.Substring(0, length);
 
             m_thumbnailManager = new ThumbnailsManager();
             m_accessManager = new AccessManager();
@@ -100,18 +122,35 @@ namespace ElFinder
         public LocalFileSystemRoot(string directory) :
             this(directory, null) { }
 
-        internal string ParentPath
+        private static string NormalizeRelativePath(string path)
         {
-            get { return m_parentPath; }
+            int start = 0;
+            int length = path.Length;
+            if (path[0] == '/' || path[0] == '\\')
+            {
+                start = 1;
+                length--;
+            }
+            if (length > 0 && (path[length - 1] == '/' && path[length - 1] == '\\'))
+                length--;
+            return path.Substring(start, length);
         }
 
-        private readonly string m_parentPath;
+        //internal string ParentPath
+        //{
+        //    get { return m_parentPath; }
+        //}
+
+        //private readonly string m_parentPath;
         private readonly DirectoryInfo m_directory;
-        private readonly DirectoryInfo m_startPath;
+        private readonly string m_directoryPath;
+
         private readonly ThumbnailsManager m_thumbnailManager;
         private readonly AccessManager m_accessManager;
+
         private string m_url;
         private string m_alias;
         private string m_volumeId;
+        private LocalDirectoryInfo m_startDirectory;
     }
 }

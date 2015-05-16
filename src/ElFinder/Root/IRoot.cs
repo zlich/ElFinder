@@ -13,7 +13,7 @@
 
         IDirectoryInfo Directory { get; }
 
-        IDirectoryInfo StartPath { get; }
+        IDirectoryInfo StartPath { get; set; }
 
         ThumbnailsManager ThumbnailsManager { get; }
 

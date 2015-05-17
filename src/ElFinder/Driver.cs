@@ -58,7 +58,11 @@ namespace ElFinder
             {
                 IRoot root = m_roots.FirstOrDefault(r => r.StartPath != null);
                 if (root == null)
+                {
+                    if(m_roots.Count == 0)
+                        return Errors.NotFound();
                     root = m_roots.First();
+                }
                 directory = root.StartPath ?? root.Directory;
             }
             else

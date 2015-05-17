@@ -1,14 +1,31 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
 using System.Web;
 
 namespace ElFinder
 {
-    public class Connector
+    public abstract class Connector : IHttpHandler
     {
-        public Connector(Driver driver)
+        public Driver Driver
         {
+            get { return m_driver; }
+        }
+        public abstract bool IsReusable { get; }
+
+        public void ProcessRequest(HttpContext context)
+        {
+            ResponseBase response = GetResponse(context.Request);
+            response.WriteResponse(context);
+        }
+
+        protected Connector() : this(new Driver()) { }
+
+        protected Connector(Driver driver)
+        {
+            if (driver == null)
+                throw new ArgumentNullException();
             Contract.Requires(driver != null);
             m_driver = driver;
         }

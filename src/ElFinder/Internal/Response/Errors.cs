@@ -33,5 +33,9 @@
         {
             return new ErrorResponse("errCmdParams", command);
         }
+        public static ErrorResponse ErrorBackend()
+        {
+            return new ErrorResponse("Invalid backend configuration. Roots count equals zero.");
+        }
     }
 }

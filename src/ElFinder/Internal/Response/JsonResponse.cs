@@ -13,11 +13,10 @@ namespace ElFinder
             HttpResponse response = context.Response;
             response.ContentType = "application/json";
             response.ContentEncoding = Encoding.UTF8;
-            using (JsonWriter jsonWriter = new JsonTextWriter(response.Output))
-            {
-                JsonSerializer serializer = new JsonSerializer();
-                serializer.Serialize(jsonWriter, this);
-            }
+            JsonWriter jsonWriter = new JsonTextWriter(response.Output);
+            JsonSerializer serializer = new JsonSerializer();
+            serializer.Serialize(jsonWriter, this);
+            response.Flush();
         }
     }
 }

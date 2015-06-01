@@ -11,14 +11,10 @@ namespace Sample
     /// </summary>
     public class Files : Connector
     {
-        public override bool IsReusable
-        {
-            get { return true; }
-        }
-
         public Files()
-        {
-            Driver.AddRoot(new LocalFileSystemRoot("C:/") { Alias = "System" });
+        {            
+            AddRoot(new LocalFileSystemRoot(@"D:\OpenSource\ElFinder\testData") { Alias = "TestData" });
+            AddRoot(new LocalFileSystemRoot("C:/Program Files") { Alias = "System" });
         }
     }
 }

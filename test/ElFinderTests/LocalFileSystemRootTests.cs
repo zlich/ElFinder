@@ -14,8 +14,8 @@ namespace ElFinderTests
             LocalFileSystemRoot root = new LocalFileSystemRoot(TestHelper.TestDataPath);
             Assert.IsNull(root.VolumeId);
 
-            Driver driver = new Driver();
-            driver.AddRoot(root);
+            Connector connector = new Connector();
+            connector.AddRoot(root);
 
             Assert.IsNotNull(root.VolumeId);
             Assert.AreEqual("v1_", root.VolumeId);

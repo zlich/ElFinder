@@ -21,7 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <CodeContractsEnableRuntimeChecking>False</CodeContractsEnableRuntimeChecking>
+    <CodeContractsEnableRuntimeChecking>True</CodeContractsEnableRuntimeChecking>
     <CodeContractsRuntimeOnlyPublicSurface>False</CodeContractsRuntimeOnlyPublicSurface>
     <CodeContractsRuntimeThrowOnFailure>True</CodeContractsRuntimeThrowOnFailure>
     <CodeContractsRuntimeCallSiteRequires>False</CodeContractsRuntimeCallSiteRequires>
@@ -92,7 +92,6 @@
   <ItemGroup>
     <Compile Include="AccessManager.cs" />
     <Compile Include="Connector.cs" />
-    <Compile Include="Driver.cs" />
     <Compile Include="Internal\HttpCacheHelper.cs" />
     <Compile Include="Internal\Response\DownloadResponse.cs" />
     <Compile Include="Internal\Response\Errors.cs" />

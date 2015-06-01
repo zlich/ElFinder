@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 using System.IO;
 
 namespace ElFinder
@@ -82,26 +83,43 @@ namespace ElFinder
 
         public IDirectoryInfo GetDirectory(string relativePath)
         {
-            if (relativePath == null)
-                throw new ArgumentNullException();
-            return new LocalDirectoryInfo(this, Path.Combine(m_directoryPath, NormalizeRelativePath(relativePath)));
+            Contract.Requires(relativePath != null);
+            Contract.Ensures(Contract.Result<IDirectoryInfo>() != null);
+
+            return new LocalDirectoryInfo(this, Path.Combine(m_directoryPath, PathHelper.NormalizeRelativePath(relativePath)));
         }
 
         public IFileInfo GetFile(string relativePath)
         {
-            if (relativePath == null)
-                throw new ArgumentNullException();
-            return new LocalFileInfo(this, Path.Combine(m_directoryPath, NormalizeRelativePath(relativePath)));
+            Contract.Requires(relativePath != null);
+            Contract.Ensures(Contract.Result<IFileInfo>() != null);
+
+            return new LocalFileInfo(this, Path.Combine(m_directoryPath, PathHelper.NormalizeRelativePath(relativePath)));
         }
 
         public IDirectoryInfo CreateDirectory(string relativeDir, string name)
         {
-            throw new NotImplementedException();
+            Contract.Requires(relativeDir != null);
+            Contract.Requires(name != null);
+            Contract.Ensures(Contract.Result<IDirectoryInfo>() != null);
+
+            string path = Path.Combine(m_directoryPath, PathHelper.NormalizeRelativePath(relativeDir), name);
+            if (!System.IO.Directory.Exists(path))
+                return new LocalDirectoryInfo(this, System.IO.Directory.CreateDirectory(path));
+            else
+                return new LocalDirectoryInfo(this, path);
         }
 
         public IFileInfo CreateFile(string relativeDir, string name)
         {
-            throw new NotImplementedException();
+            Contract.Requires(relativeDir != null);
+            Contract.Requires(name != null);
+            Contract.Ensures(Contract.Result<IFileInfo>() != null);
+
+            string path = Path.Combine(m_directoryPath, PathHelper.NormalizeRelativePath(relativeDir), name);
+            if (!System.IO.File.Exists(path))
+                using (FileStream stream = File.Create(path)) { }
+            return new LocalFileInfo(this, path);
         }
 
         public LocalFileSystemRoot(DirectoryInfo directory, string url)
@@ -132,21 +150,7 @@ namespace ElFinder
         public LocalFileSystemRoot(string directory) :
             this(directory, null) { }
 
-        private static string NormalizeRelativePath(string path)
-        {
-            int start = 0;
-            int length = path.Length;
-            if (path.Length == 0)
-                return string.Empty;
-            if (path[0] == '/' || path[0] == '\\')
-            {
-                start = 1;
-                length--;
-            }
-            if (length > 0 && (path[length - 1] == '/' && path[length - 1] == '\\'))
-                length--;
-            return path.Substring(start, length);
-        }
+     
         private readonly DirectoryInfo m_directory;
         private readonly string m_directoryPath;
 

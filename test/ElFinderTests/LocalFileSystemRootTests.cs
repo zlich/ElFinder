@@ -1,6 +1,7 @@
 ﻿using ElFinder;
 using NUnit.Framework;
 using System;
+using System.Diagnostics.Contracts;
 using System.IO;
 
 namespace ElFinderTests
@@ -88,7 +89,6 @@ namespace ElFinderTests
         public void TestGetFile()
         {
             LocalFileSystemRoot root = new LocalFileSystemRoot(TestHelper.TestDataPath);
-            Assert.Throws<ArgumentNullException>(() => root.GetFile(null));
 
             IFileInfo info = root.GetFile("subfolder/subfolder file.txt");
             Assert.AreEqual(true, info.Exists);

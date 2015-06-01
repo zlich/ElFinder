@@ -58,14 +58,14 @@ namespace ElFinder
                 {
                     ContainsChildDirs = hasSubdirs ? (byte)1 : (byte)0,
                     Name = Name,
-                    ParentHash = Root.VolumeId + Helper.EncodePath(Parent.RelativePath)
+                    ParentHash = Root.VolumeId + PathHelper.EncodePath(Parent.RelativePath)
                 };
             }
             response.Mime = MimeType;
             response.Read = 1;
             response.Write = (byte)(Root.AccessManager.IsReadOnly ? 0 : 1);
             response.Locked = (byte)(Root.AccessManager.IsLocked ? 1 : 0);
-            response.Hash = Root.VolumeId + Helper.EncodePath(RelativePath);
+            response.Hash = Root.VolumeId + PathHelper.EncodePath(RelativePath);
             response.UnixTimeStamp = (long)(DirectoryInfo.LastWriteTimeUtc - UnixOrigin).TotalSeconds;
             response.Size = 0;
             return response;

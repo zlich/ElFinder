@@ -129,7 +129,7 @@
     <Compile Include="Unit\IFileInfo.cs" />
     <Compile Include="Internal\LocalFileSystem\LocalDirectoryInfo.cs" />
     <Compile Include="Internal\LocalFileSystem\LocalFileInfo.cs" />
-    <Compile Include="Internal\Helper.cs" />
+    <Compile Include="Internal\PathHelper.cs" />
     <Compile Include="Internal\MimeTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Internal\LocalFileSystem\LocalUnitInfo.cs" />

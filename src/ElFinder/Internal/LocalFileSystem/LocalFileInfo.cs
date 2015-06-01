@@ -59,8 +59,8 @@ namespace ElFinder
             response.Size = FileInfo.Length;
             response.UnixTimeStamp = (long)(FileInfo.LastWriteTimeUtc - UnixOrigin).TotalSeconds;
             response.Mime = MimeType;
-            response.Hash = Root.VolumeId + Helper.EncodePath(RelativePath);
-            response.ParentHash = Root.VolumeId + Helper.EncodePath(Directory.RelativePath);
+            response.Hash = Root.VolumeId + PathHelper.EncodePath(RelativePath);
+            response.ParentHash = Root.VolumeId + PathHelper.EncodePath(Directory.RelativePath);
             return response;
         }
 

@@ -73,6 +73,48 @@ namespace ElFinderTests
             Assert.AreEqual(1, ((DirectoryDTO)response.Tree[0]).ContainsChildDirs);
         }
 
+        [Test]
+        public void TestMakeDir()
+        {
+            //set up
+            string path = TestHelper.GetTestDataPath("subfolder/2/newDir");
+            if (Directory.Exists(path))
+                Directory.Delete(path);
+
+
+            Connector connector = CreateTestConnector();
+            //check missed parameter
+            ErrorResponse error = GetResponse<ErrorResponse>(connector, "cmd=mkdir");
+
+            UnitDTO target = connector.Roots[0].GetDirectory("subfolder/2").ToDTO();
+            error = GetResponse<ErrorResponse>(connector, "cmd=mkdir&target=" + target.Hash);
+
+            AddResponse response = GetResponse<AddResponse>(connector, "cmd=mkdir&target=" + target.Hash + "&name=newDir");
+            Assert.AreEqual(1, response.Added.Count);
+            Assert.AreEqual("newDir", response.Added[0].Name);
+        }
+
+        [Test]
+        public void TestMakeFile()
+        {
+            //set up
+            string path = TestHelper.GetTestDataPath("subfolder/2/newFile");
+            if (Directory.Exists(path))
+                Directory.Delete(path);
+
+
+            Connector connector = CreateTestConnector();
+            //check missed parameter
+            ErrorResponse error = GetResponse<ErrorResponse>(connector, "cmd=mkFile");
+
+            UnitDTO target = connector.Roots[0].GetDirectory("subfolder/2").ToDTO();
+            error = GetResponse<ErrorResponse>(connector, "cmd=mkfile&target=" + target.Hash);
+
+            AddResponse response = GetResponse<AddResponse>(connector, "cmd=mkfile&target=" + target.Hash + "&name=newFile");
+            Assert.AreEqual(1, response.Added.Count);
+            Assert.AreEqual("newFile", response.Added[0].Name);
+        }
+
         private static T GetResponse<T>(Connector connector, string query) where T : ResponseBase
         {
             using (var writer = new MemoryWriterMock())

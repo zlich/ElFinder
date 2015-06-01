@@ -407,7 +407,7 @@ namespace ElFinder
             string pathHash = target.Substring(separatorIndex);
 
             IRoot root = m_roots.First(r => r.VolumeId == volumePrefix);
-            string relativePath = Helper.DecodePath(pathHash);
+            string relativePath = PathHelper.DecodePath(pathHash);
             IDirectoryInfo dir = root.GetDirectory(relativePath);
             if (dir.Exists)
                 return dir;

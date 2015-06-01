@@ -54,6 +54,9 @@ namespace ElFinder
 
         internal ResponseBase GetResponse(HttpRequest request)
         {
+            Contract.Requires(request != null);
+            Contract.Ensures(Contract.Result<ResponseBase>() != null);
+
             if (m_roots.Count == 0)
                 return Errors.ErrorBackend();
             NameValueCollection parameters = request.QueryString.Count > 0 ? request.QueryString : request.Form;
@@ -123,7 +126,7 @@ namespace ElFinder
                     {
                         IEnumerable<string> targets = GetTargetsArray(request);
                         if (targets == null)
-                            Errors.MissedParameter("targets");
+                            return Errors.MissedParameter("targets");
                         return Remove(targets);
                     }
                 case "ls":
@@ -325,11 +328,11 @@ namespace ElFinder
         {
             IUnitInfo unit = ParsePath(target);
             ReplaceResponse response = new ReplaceResponse();
-            response.Removed.Add(unit.ToDTO().Hash);
+            response.Removed.Add(target);
 
             IUnitInfo renamed;
             if (unit is IDirectoryInfo)
-                renamed = unit.Root.RenameDir(unit.RelativePath, newName);
+                renamed = unit.Root.RenameDirectory(unit.RelativePath, newName);
             else
                 renamed = unit.Root.RenameFile(unit.RelativePath, newName);
 
@@ -339,7 +342,19 @@ namespace ElFinder
 
         private JsonResponse Remove(IEnumerable<string> targets)
         {
-            throw new NotImplementedException();
+            Contract.Requires(targets != null);
+
+            RemoveResponse response = new RemoveResponse();
+            foreach (string target in targets)
+            {
+                IUnitInfo item = ParsePath(target);
+                response.Removed.Add(target);
+                if (item is IDirectoryInfo)
+                    item.Root.DeleteDirectory(item.RelativePath);
+                else
+                    item.Root.DeleteFile(item.RelativePath);
+            }
+            return response;
         }
 
         private JsonResponse Duplicate(IEnumerable<string> targets)

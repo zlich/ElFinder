@@ -13,8 +13,6 @@ namespace ElFinderTests
         public void TestVolumeId()
         {
             LocalFileSystemRoot root = new LocalFileSystemRoot(TestHelper.TestDataPath);
-            Assert.IsNull(root.VolumeId);
-
             Connector connector = new Connector();
             connector.AddRoot(root);
 
@@ -45,13 +43,7 @@ namespace ElFinderTests
         [Test]
         public void TestDirectory()
         {
-            DirectoryInfo info = null;
-            Assert.Throws<ArgumentNullException>(() => new LocalFileSystemRoot(info));
-
-            string path = null;
-            Assert.Throws<ArgumentNullException>(() => new LocalFileSystemRoot(path));
-
-            path = "C:/NotExistFolder_111";
+            string path = "C:/NotExistFolder_111";
             Assert.Throws<ArgumentException>(() => new LocalFileSystemRoot(path));
 
             LocalFileSystemRoot root = new LocalFileSystemRoot(TestHelper.TestDataPath);

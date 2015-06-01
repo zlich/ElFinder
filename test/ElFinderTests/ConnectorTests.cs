@@ -157,6 +157,29 @@ namespace ElFinderTests
             Assert.AreEqual("subfolder file.txt", response.Added[0].Name);
         }
 
+        [Test]
+        public void TestDelete()
+        {
+            Connector connector = CreateTestConnector();
+            //check missed parameter
+            ErrorResponse error = GetResponse<ErrorResponse>(connector, "cmd=rm");
+
+            //prepare file and dir
+            string filePath = TestHelper.GetTestDataPath("subfolder/2/newFile");
+            using (FileStream stream = File.Create(filePath)) { }
+
+            string dirPath = TestHelper.GetTestDataPath("subfolder/2/newDir");
+            Directory.CreateDirectory(dirPath);
+
+
+            string fileHash = connector.Roots[0].GetFile("subfolder/2/newFile").ToDTO().Hash;
+            string dirHash = connector.Roots[0].GetDirectory("subfolder/2/newDir").ToDTO().Hash;
+            RemoveResponse response = GetResponse<RemoveResponse>(connector, "cmd=rm&targets=" + fileHash + "&targets=" + dirHash);
+            Assert.AreEqual(2, response.Removed.Count);
+            Assert.AreEqual(fileHash, response.Removed[0]);
+            Assert.AreEqual(dirHash, response.Removed[1]);
+        }
+
         private static T GetResponse<T>(Connector connector, string query) where T : ResponseBase
         {
             using (var writer = new MemoryWriterMock())

@@ -9,7 +9,6 @@ namespace ElFinder
     {
         public override void WriteResponse(HttpContext context)
         {
-            Contract.Requires(context != null);
             HttpResponse response = context.Response;
             response.ContentType = "application/json";
             response.ContentEncoding = Encoding.UTF8;

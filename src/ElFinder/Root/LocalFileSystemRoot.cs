@@ -15,12 +15,7 @@ namespace ElFinder
         public string VolumeId
         {
             get { return m_volumeId; }
-            set
-            {
-                if (value == null)
-                    throw new ArgumentNullException();
-                m_volumeId = value;
-            }
+            set { m_volumeId = value; }
         }
 
         /// <summary>
@@ -81,50 +76,18 @@ namespace ElFinder
             get { return m_accessManager; }
         }
 
-        public IDirectoryInfo GetDirectory(string relativePath)
-        {
-            Contract.Requires(relativePath != null);
-            Contract.Ensures(Contract.Result<IDirectoryInfo>() != null);
-
-            return new LocalDirectoryInfo(this, Path.Combine(m_directoryPath, PathHelper.NormalizeRelativePath(relativePath)));
-        }
-
+        #region File operations
         public IFileInfo GetFile(string relativePath)
         {
-            Contract.Requires(relativePath != null);
-            Contract.Ensures(Contract.Result<IFileInfo>() != null);
-
             return new LocalFileInfo(this, Path.Combine(m_directoryPath, PathHelper.NormalizeRelativePath(relativePath)));
-        }
-
-        public IDirectoryInfo CreateDirectory(string relativeDir, string name)
-        {
-            Contract.Requires(relativeDir != null);
-            Contract.Requires(name != null);
-            Contract.Ensures(Contract.Result<IDirectoryInfo>() != null);
-
-            string path = Path.Combine(m_directoryPath, PathHelper.NormalizeRelativePath(relativeDir), name);
-            if (!System.IO.Directory.Exists(path))
-                return new LocalDirectoryInfo(this, System.IO.Directory.CreateDirectory(path));
-            else
-                return new LocalDirectoryInfo(this, path);
         }
 
         public IFileInfo CreateFile(string relativeDir, string name)
         {
-            Contract.Requires(relativeDir != null);
-            Contract.Requires(name != null);
-            Contract.Ensures(Contract.Result<IFileInfo>() != null);
-
             string path = Path.Combine(m_directoryPath, PathHelper.NormalizeRelativePath(relativeDir), name);
             if (!System.IO.File.Exists(path))
                 using (FileStream stream = File.Create(path)) { }
             return new LocalFileInfo(this, path);
-        }
-
-        public IDirectoryInfo RenameDir(string relativePath, string newName)
-        {
-            return new LocalDirectoryInfo(this, Rename(relativePath, newName, true));
         }
 
         public IFileInfo RenameFile(string relativePath, string newName)
@@ -132,10 +95,42 @@ namespace ElFinder
             return new LocalFileInfo(this, Rename(relativePath, newName, false));
         }
 
+        public void DeleteFile(string relativePath)
+        {
+            Delete(relativePath, false);
+        } 
+        #endregion
+
+        #region Directory operations
+        public IDirectoryInfo GetDirectory(string relativePath)
+        {
+            return new LocalDirectoryInfo(this, Path.Combine(m_directoryPath, PathHelper.NormalizeRelativePath(relativePath)));
+        }
+
+        public IDirectoryInfo CreateDirectory(string relativeDir, string name)
+        {
+            string path = Path.Combine(m_directoryPath, PathHelper.NormalizeRelativePath(relativeDir), name);
+            if (!System.IO.Directory.Exists(path))
+                return new LocalDirectoryInfo(this, System.IO.Directory.CreateDirectory(path));
+            else
+                return new LocalDirectoryInfo(this, path);
+        }
+
+        public IDirectoryInfo RenameDirectory(string relativePath, string newName)
+        {
+            return new LocalDirectoryInfo(this, Rename(relativePath, newName, true));
+        }
+        public void DeleteDirectory(string relativePath)
+        {
+            Delete(relativePath, true);
+        } 
+        #endregion
+
+
         public LocalFileSystemRoot(DirectoryInfo directory, string url)
         {
-            if (directory == null)
-                throw new ArgumentNullException("directory", "Root directory can not be null");
+            Contract.Requires(directory != null);
+            Contract.Requires(directory.FullName.Length > 0);
             if (!directory.Exists)
                 throw new ArgumentException("Root directory must exist", "directory");
 
@@ -152,20 +147,25 @@ namespace ElFinder
         }
 
         public LocalFileSystemRoot(string directory, string url)
-            : this(new DirectoryInfo(directory), url) { }
+            : this(new DirectoryInfo(directory), url)
+        {
+            Contract.Requires(directory != null);
+        }
 
         public LocalFileSystemRoot(DirectoryInfo directory) :
-            this(directory, null) { }
+            this(directory, null)
+        {
+            Contract.Requires(directory != null);
+        }
 
         public LocalFileSystemRoot(string directory) :
-            this(directory, null) { }
+            this(directory, null)
+        {
+            Contract.Requires(directory != null);
+        }
 
         private string Rename(string relativePath, string newName, bool isDir)
         {
-            Contract.Requires(relativePath != null);
-            Contract.Requires(!string.IsNullOrEmpty(newName));
-            Contract.Ensures(Contract.Result<string>() != null);
-
             string src = Path.Combine(m_directoryPath, PathHelper.NormalizeRelativePath(relativePath));
             string dest = Path.Combine(System.IO.Directory.GetParent(src).FullName, newName);
             if (isDir)
@@ -173,6 +173,15 @@ namespace ElFinder
             else
                 File.Move(src, dest);
             return dest;
+        }
+
+        private void Delete(string relativePath, bool isDir)
+        {
+            string path = Path.Combine(m_directoryPath, PathHelper.NormalizeRelativePath(relativePath));
+            if (isDir)
+                System.IO.Directory.Delete(path, true);
+            else
+                File.Delete(path);
         }
      
         private readonly DirectoryInfo m_directory;

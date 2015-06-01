@@ -26,5 +26,9 @@
         IDirectoryInfo CreateDirectory(string relativeDir, string name);
 
         IFileInfo CreateFile(string relativeDir, string name);
+
+        IFileInfo RenameFile(string relativePath, string name);
+
+        IDirectoryInfo RenameDir(string relativePath, string name);
     }
 }

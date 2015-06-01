@@ -122,6 +122,16 @@ namespace ElFinder
             return new LocalFileInfo(this, path);
         }
 
+        public IDirectoryInfo RenameDir(string relativePath, string newName)
+        {
+            return new LocalDirectoryInfo(this, Rename(relativePath, newName, true));
+        }
+
+        public IFileInfo RenameFile(string relativePath, string newName)
+        {
+            return new LocalFileInfo(this, Rename(relativePath, newName, false));
+        }
+
         public LocalFileSystemRoot(DirectoryInfo directory, string url)
         {
             if (directory == null)
@@ -150,6 +160,20 @@ namespace ElFinder
         public LocalFileSystemRoot(string directory) :
             this(directory, null) { }
 
+        private string Rename(string relativePath, string newName, bool isDir)
+        {
+            Contract.Requires(relativePath != null);
+            Contract.Requires(!string.IsNullOrEmpty(newName));
+            Contract.Ensures(Contract.Result<string>() != null);
+
+            string src = Path.Combine(m_directoryPath, PathHelper.NormalizeRelativePath(relativePath));
+            string dest = Path.Combine(System.IO.Directory.GetParent(src).FullName, newName);
+            if (isDir)
+                System.IO.Directory.Move(src, dest);
+            else
+                File.Move(src, dest);
+            return dest;
+        }
      
         private readonly DirectoryInfo m_directory;
         private readonly string m_directoryPath;

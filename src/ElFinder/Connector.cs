@@ -321,9 +321,20 @@ namespace ElFinder
             return new AddResponse(newFile);
         }
 
-        private JsonResponse Rename(string target, string name)
+        private JsonResponse Rename(string target, string newName)
         {
-            throw new NotImplementedException();
+            IUnitInfo unit = ParsePath(target);
+            ReplaceResponse response = new ReplaceResponse();
+            response.Removed.Add(unit.ToDTO().Hash);
+
+            IUnitInfo renamed;
+            if (unit is IDirectoryInfo)
+                renamed = unit.Root.RenameDir(unit.RelativePath, newName);
+            else
+                renamed = unit.Root.RenameFile(unit.RelativePath, newName);
+
+            response.Added.Add(renamed.ToDTO());
+            return response;
         }
 
         private JsonResponse Remove(IEnumerable<string> targets)

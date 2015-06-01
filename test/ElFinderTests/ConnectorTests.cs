@@ -76,12 +76,6 @@ namespace ElFinderTests
         [Test]
         public void TestMakeDir()
         {
-            //set up
-            string path = TestHelper.GetTestDataPath("subfolder/2/newDir");
-            if (Directory.Exists(path))
-                Directory.Delete(path);
-
-
             Connector connector = CreateTestConnector();
             //check missed parameter
             ErrorResponse error = GetResponse<ErrorResponse>(connector, "cmd=mkdir");
@@ -92,20 +86,19 @@ namespace ElFinderTests
             AddResponse response = GetResponse<AddResponse>(connector, "cmd=mkdir&target=" + target.Hash + "&name=newDir");
             Assert.AreEqual(1, response.Added.Count);
             Assert.AreEqual("newDir", response.Added[0].Name);
+
+
+            //clean up
+            string path = TestHelper.GetTestDataPath("subfolder/2/newDir");
+            Directory.Delete(path);
         }
 
         [Test]
         public void TestMakeFile()
         {
-            //set up
-            string path = TestHelper.GetTestDataPath("subfolder/2/newFile");
-            if (Directory.Exists(path))
-                Directory.Delete(path);
-
-
             Connector connector = CreateTestConnector();
             //check missed parameter
-            ErrorResponse error = GetResponse<ErrorResponse>(connector, "cmd=mkFile");
+            ErrorResponse error = GetResponse<ErrorResponse>(connector, "cmd=mkfile");
 
             UnitDTO target = connector.Roots[0].GetDirectory("subfolder/2").ToDTO();
             error = GetResponse<ErrorResponse>(connector, "cmd=mkfile&target=" + target.Hash);
@@ -113,6 +106,55 @@ namespace ElFinderTests
             AddResponse response = GetResponse<AddResponse>(connector, "cmd=mkfile&target=" + target.Hash + "&name=newFile");
             Assert.AreEqual(1, response.Added.Count);
             Assert.AreEqual("newFile", response.Added[0].Name);
+
+
+            //clean up
+            string path = TestHelper.GetTestDataPath("subfolder/2/newFile");
+            File.Delete(path);
+        }
+
+        [Test]
+        public void TestRenameDir()
+        {
+            Connector connector = CreateTestConnector();
+            //check missed parameter
+            ErrorResponse error = GetResponse<ErrorResponse>(connector, "cmd=rename");
+
+            UnitDTO target = connector.Roots[0].GetDirectory("subfolder/2").ToDTO();
+            error = GetResponse<ErrorResponse>(connector, "cmd=rename&target=" + target.Hash);
+            ReplaceResponse response = GetResponse<ReplaceResponse>(connector, "cmd=rename&target=" + target.Hash + "&name=renamed2");
+            Assert.AreEqual(1, response.Added.Count);
+            Assert.AreEqual(1, response.Removed.Count);
+            Assert.AreEqual(target.Hash, response.Removed[0]);
+            Assert.AreEqual("renamed2", response.Added[0].Name);
+
+            //revert
+            response = GetResponse<ReplaceResponse>(connector, "cmd=rename&target=" + response.Added[0].Hash + "&name=2");
+            Assert.AreEqual(1, response.Added.Count);
+            Assert.AreEqual(1, response.Removed.Count);
+            Assert.AreEqual("2", response.Added[0].Name);
+        }
+
+        [Test]
+        public void TestRenameFile()
+        {
+            Connector connector = CreateTestConnector();
+            //check missed parameter
+            ErrorResponse error = GetResponse<ErrorResponse>(connector, "cmd=rename");
+
+            UnitDTO target = connector.Roots[0].GetFile("subfolder/subfolder file.txt").ToDTO();
+            error = GetResponse<ErrorResponse>(connector, "cmd=rename&target=" + target.Hash);
+            ReplaceResponse response = GetResponse<ReplaceResponse>(connector, "cmd=rename&target=" + target.Hash + "&name=renamedFile");
+            Assert.AreEqual(1, response.Added.Count);
+            Assert.AreEqual(1, response.Removed.Count);
+            Assert.AreEqual(target.Hash, response.Removed[0]);
+            Assert.AreEqual("renamedFile", response.Added[0].Name);
+
+            //revert
+            response = GetResponse<ReplaceResponse>(connector, "cmd=rename&target=" + response.Added[0].Hash + "&name=subfolder file.txt");
+            Assert.AreEqual(1, response.Added.Count);
+            Assert.AreEqual(1, response.Removed.Count);
+            Assert.AreEqual("subfolder file.txt", response.Added[0].Name);
         }
 
         private static T GetResponse<T>(Connector connector, string query) where T : ResponseBase

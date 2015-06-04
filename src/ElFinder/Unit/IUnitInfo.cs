@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Diagnostics.Contracts;
 
 namespace ElFinder
-{
+{    
     /// <summary>
     /// Represents generic unit - file or directory
     /// </summary>
+    [ContractClass(typeof(ConstractForIUnitInfo))]
     public interface IUnitInfo
     {
         /// <summary>
@@ -42,5 +44,61 @@ namespace ElFinder
         /// </summary>
         /// <returns>The data-transfer object</returns>
         UnitDTO ToDTO();
+    }
+
+    [ContractClassFor(typeof(IUnitInfo))]
+    internal abstract class ConstractForIUnitInfo : IUnitInfo
+    {
+        string IUnitInfo.Name
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<string>() != null);
+                return null;
+            }
+        }
+
+        IRoot IUnitInfo.Root
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<IRoot>() != null);
+                return null;
+            }
+        }
+
+        string IUnitInfo.MimeType
+        {
+            get
+            {
+                Contract.Ensures(!string.IsNullOrEmpty(Contract.Result<string>()));
+                return null;
+            }
+        }
+
+        bool IUnitInfo.Exists
+        {
+            get { return true; }
+        }
+
+        string IUnitInfo.RelativePath
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<string>() != null);
+                return null;
+            }
+        }
+
+        bool IUnitInfo.IsHidden
+        {
+            get { return true; }
+        }
+
+        UnitDTO IUnitInfo.ToDTO()
+        {
+            Contract.Ensures(Contract.Result<UnitDTO>() != null);
+            return null;
+        }
     }
 }

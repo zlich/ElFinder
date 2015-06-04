@@ -37,6 +37,8 @@ namespace ElFinder
 
         public void ProcessRequest(HttpContext context)
         {
+            if (context == null)
+                throw new ArgumentNullException("context");
             ResponseBase response = GetResponse(context.Request);
             response.WriteResponse(context);
         }

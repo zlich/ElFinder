@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 
 namespace ElFinder
 {    
     /// <summary>
     /// Respresnts a directory info.
     /// </summary>
+    [ContractClass(typeof(ContractForIDirectoryInfo))]
     public interface IDirectoryInfo : IUnitInfo
     {
         /// <summary>
@@ -29,5 +31,50 @@ namespace ElFinder
         /// </summary>
         /// <returns>The collection of all units.</returns>
         IEnumerable<IUnitInfo> GetUnits();
+    }
+
+    [ContractClassFor(typeof(IDirectoryInfo))]
+    internal abstract class ContractForIDirectoryInfo : IDirectoryInfo
+    {
+        IDirectoryInfo IDirectoryInfo.Parent
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<IDirectoryInfo>() != null);
+                return null;
+            }
+        }
+
+        IEnumerable<IDirectoryInfo> IDirectoryInfo.GetDirectories()
+        {
+            Contract.Ensures(Contract.Result<IEnumerable<IDirectoryInfo>>() != null);
+            return null;
+        }
+
+        IEnumerable<IFileInfo> IDirectoryInfo.GetFiles()
+        {
+            Contract.Ensures(Contract.Result<IEnumerable<IFileInfo>>() != null);
+            return null;
+        }
+
+        IEnumerable<IUnitInfo> IDirectoryInfo.GetUnits()
+        {
+            Contract.Ensures(Contract.Result<IEnumerable<IUnitInfo>>() != null);
+            return null;
+        }
+
+        public abstract string Name { get; }
+
+        public abstract IRoot Root { get; }
+
+        public abstract string MimeType { get; }
+
+        public abstract bool Exists { get; }
+
+        public abstract string RelativePath { get; }
+
+        public abstract bool IsHidden { get; }
+
+        public abstract UnitDTO ToDTO();
     }
 }

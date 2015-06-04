@@ -47,48 +47,59 @@ namespace ElFinder
     [ContractClassFor(typeof(IRoot))]
     internal abstract class ContractForIRoot : IRoot
     {
-
         string IRoot.VolumeId
         {
             get
             {
                 Contract.Ensures(Contract.Result<string>() != null);
-                throw new NotImplementedException();
+                return null;
             }
             set { Contract.Requires(!string.IsNullOrEmpty(value)); }
         }
 
         string IRoot.Alias
         {
-            get { throw new NotImplementedException(); }
-            set { throw new NotImplementedException(); }
+            get { return null; }
+            set { }
         }
 
         string IRoot.Url
         {
-            get { throw new NotImplementedException(); }
-            set { throw new NotImplementedException(); }
+            get { return null; }
+            set { }
         }
 
         IDirectoryInfo IRoot.Directory
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                Contract.Ensures(Contract.Result<IDirectoryInfo>() != null);
+                return null;
+            }
         }
 
         IDirectoryInfo IRoot.StartPath
         {
-            get { throw new NotImplementedException(); }
-            set { throw new NotImplementedException(); }
+            get { return null; }
+            set {  }
         }
 
         ThumbnailsManager IRoot.ThumbnailsManager
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                Contract.Ensures(Contract.Result<ThumbnailsManager>() != null);
+                return null;
+            }
         }
 
         AccessManager IRoot.AccessManager
         {
-            get { throw new NotImplementedException(); }
+            get
+            {
+                Contract.Ensures(Contract.Result<AccessManager>() != null);
+                return null;
+            }
         }
 
         IFileInfo IRoot.GetFile(string relativePath)
@@ -96,7 +107,7 @@ namespace ElFinder
             Contract.Requires(relativePath != null);
             Contract.Ensures(Contract.Result<IFileInfo>() != null);
 
-            throw new NotImplementedException();
+            return null;
         }
 
         IFileInfo IRoot.CreateFile(string relativeDir, string name)
@@ -105,7 +116,7 @@ namespace ElFinder
             Contract.Requires(name != null);
             Contract.Ensures(Contract.Result<IFileInfo>() != null);
 
-            throw new NotImplementedException();
+            return null;
         }
 
         IFileInfo IRoot.RenameFile(string relativePath, string name)
@@ -114,14 +125,12 @@ namespace ElFinder
             Contract.Requires(!string.IsNullOrEmpty(name));
             Contract.Ensures(Contract.Result<IFileInfo>() != null);
 
-            throw new NotImplementedException();
+            return null;
         }
 
         void IRoot.DeleteFile(string relativePath)
         {
             Contract.Requires(relativePath != null);
-
-            throw new NotImplementedException();
         }
 
         IDirectoryInfo IRoot.GetDirectory(string relativePath)
@@ -129,7 +138,7 @@ namespace ElFinder
             Contract.Requires(relativePath != null);
             Contract.Ensures(Contract.Result<IDirectoryInfo>() != null);
 
-            throw new NotImplementedException();
+            return null;
         }
 
         IDirectoryInfo IRoot.CreateDirectory(string relativeDir, string name)
@@ -138,7 +147,7 @@ namespace ElFinder
             Contract.Requires(name != null);
             Contract.Ensures(Contract.Result<IDirectoryInfo>() != null);
 
-            throw new NotImplementedException();
+            return null;
         }
 
         IDirectoryInfo IRoot.RenameDirectory(string relativePath, string name)
@@ -147,14 +156,12 @@ namespace ElFinder
             Contract.Requires(!string.IsNullOrEmpty(name));
             Contract.Ensures(Contract.Result<IDirectoryInfo>() != null);
 
-            throw new NotImplementedException();
+            return null;
         }
 
         void IRoot.DeleteDirectory(string relativePath)
         {
             Contract.Requires(relativePath != null);
-
-            throw new NotImplementedException();
         }
     }
 }

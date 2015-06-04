@@ -66,8 +66,6 @@ namespace ElFinder
 
         public void CopyTo(Stream output)
         {
-            if (output == null)
-                throw new ArgumentNullException("output");
             using (FileStream file = FileInfo.OpenRead())
             {
                 file.CopyTo(output);

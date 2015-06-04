@@ -1,5 +1,6 @@
 ﻿using System.Runtime.Serialization;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 
 namespace ElFinder
 {
@@ -29,6 +30,7 @@ namespace ElFinder
 
         public Options(IDirectoryInfo directory)
         {
+            Contract.Requires(directory != null);
             Path = directory.Root.Alias;
             if (directory.RelativePath != string.Empty)
                 Path += Separator + directory.RelativePath.Replace('\\', Separator);

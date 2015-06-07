@@ -18,5 +18,6 @@ namespace ElFinder
         public const string Remove = "rm";
         public const string List = "ls";
         public const string Get = "get";
+        public const string Put = "put";
     }
 }

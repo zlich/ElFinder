@@ -192,6 +192,24 @@ namespace ElFinderTests
             Assert.AreEqual("12345", response.Content.Replace(Environment.NewLine, ""));
         }
 
+        [Test]
+        public void TestPut()
+        {
+            Connector connector = CreateTestConnector();
+            //check missed parameter
+            ErrorResponse error = GetResponse<ErrorResponse>(connector, "cmd=put");
+
+            UnitDTO target = connector.Roots[0].GetFile("subfolder/subfolder file.txt").ToDTO();
+            error = GetResponse<ErrorResponse>(connector, "cmd=put&target=" + target.Hash);
+            ChangedResponse response = GetResponse<ChangedResponse>(connector, "cmd=put&content=custom_content&target=" + target.Hash);           
+            Assert.AreEqual(1, response.Changed.Count);
+            Assert.AreEqual(target.Name, response.Changed[0].Name);
+            using (var reader = File.OpenText(TestHelper.GetTestDataPath("subfolder/subfolder file.txt")))
+            {
+                Assert.AreEqual("custom_content", reader.ReadToEnd());
+            }
+        }
+
         private static T GetResponse<T>(Connector connector, string query) where T : ResponseBase
         {
             using (var writer = new MemoryWriterMock())

@@ -109,6 +109,15 @@ namespace ElFinder
             }
         }
 
+        public void PutText(string relativePath, string content)
+        {
+            string path = GetFullPath(relativePath);
+            using (StreamWriter writer = new StreamWriter(path, false))
+            {
+                writer.Write(content);
+            }
+        }
+
         #endregion
 
         #region Directory operations

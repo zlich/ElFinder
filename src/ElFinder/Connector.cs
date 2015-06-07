@@ -94,14 +94,8 @@ namespace ElFinder
                     return List(target);
                 case Commands.Get:
                     return Get(target);
-                case "put":
-                    if (string.IsNullOrEmpty(target))
-                        return Errors.MissedParameter(cmdName);
-                    string content = parameters["content"];
-
-                    if (string.IsNullOrEmpty(content))
-                        return Errors.MissedParameter("content");
-                    return Put(target, content);
+                case Commands.Put:
+                    return Put(target, parameters["content"]);
                 case "paste":
                     {
                         IEnumerable<string> targets = GetTargetsArray(request);
@@ -352,14 +346,26 @@ namespace ElFinder
             if (string.IsNullOrEmpty(target))
                 return Errors.MissedParameter(Commands.Get);
             IFileInfo file = ParsePath(target) as IFileInfo;
-            if (!file.Exists)
+            if (file == null || !file.Exists)
                 return Errors.NotFound();
             return new GetResponse(file.Root.GetText(file.RelativePath));
         }
 
         private JsonResponse Put(string target, string content)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(target))
+                return Errors.MissedParameter(Commands.Put);
+            if (string.IsNullOrEmpty(content))
+                return Errors.MissedParameter("content");
+
+            IFileInfo file = ParsePath(target) as IFileInfo;
+            if (file == null || !file.Exists)
+                return Errors.NotFound();
+            file.Root.PutText(file.RelativePath, content);
+
+            ChangedResponse response = new ChangedResponse();
+            response.Changed.Add((FileDTO)file.ToDTO());
+            return response;
         }
         private JsonResponse Paste(string source, string dest, IEnumerable<string> targets, bool isCut)
         {

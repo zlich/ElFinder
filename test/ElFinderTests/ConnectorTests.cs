@@ -180,6 +180,18 @@ namespace ElFinderTests
             Assert.AreEqual(dirHash, response.Removed[1]);
         }
 
+        [Test]
+        public void TestGet()
+        {
+            Connector connector = CreateTestConnector();
+            //check missed parameter
+            ErrorResponse error = GetResponse<ErrorResponse>(connector, "cmd=get");
+
+            UnitDTO target = connector.Roots[0].GetFile("testText.txt").ToDTO();
+            GetResponse response = GetResponse<GetResponse>(connector, "cmd=get&target=" + target.Hash);
+            Assert.AreEqual("12345", response.Content.Replace(Environment.NewLine, ""));
+        }
+
         private static T GetResponse<T>(Connector connector, string query) where T : ResponseBase
         {
             using (var writer = new MemoryWriterMock())

@@ -30,6 +30,8 @@ namespace ElFinder
 
         IFileInfo RenameFile(string relativePath, string name);
 
+        string GetText(string relativePath);
+
         void DeleteFile(string relativePath); 
         #endregion
 
@@ -131,6 +133,14 @@ namespace ElFinder
         void IRoot.DeleteFile(string relativePath)
         {
             Contract.Requires(relativePath != null);
+        }
+
+        string IRoot.GetText(string relativePath)
+        {
+            Contract.Requires(relativePath != null);
+            Contract.Ensures(Contract.Result<string>() != null);
+
+            return null;
         }
 
         IDirectoryInfo IRoot.GetDirectory(string relativePath)

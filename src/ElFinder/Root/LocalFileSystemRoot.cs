@@ -79,7 +79,7 @@ namespace ElFinder
         #region File operations
         public IFileInfo GetFile(string relativePath)
         {
-            return new LocalFileInfo(this, Path.Combine(m_directoryPath, PathHelper.NormalizeRelativePath(relativePath)));
+            return new LocalFileInfo(this, GetFullPath(relativePath));
         }
 
         public IFileInfo CreateFile(string relativeDir, string name)
@@ -98,13 +98,23 @@ namespace ElFinder
         public void DeleteFile(string relativePath)
         {
             Delete(relativePath, false);
-        } 
+        }
+
+        public string GetText(string relativePath)
+        {
+            string path = GetFullPath(relativePath);
+            using (StreamReader reader = File.OpenText(path))
+            {
+                return reader.ReadToEnd();
+            }
+        }
+
         #endregion
 
         #region Directory operations
         public IDirectoryInfo GetDirectory(string relativePath)
         {
-            return new LocalDirectoryInfo(this, Path.Combine(m_directoryPath, PathHelper.NormalizeRelativePath(relativePath)));
+            return new LocalDirectoryInfo(this, GetFullPath(relativePath));
         }
 
         public IDirectoryInfo CreateDirectory(string relativeDir, string name)
@@ -134,7 +144,6 @@ namespace ElFinder
             if (!directory.Exists)
                 throw new ArgumentException("Root directory must exist", "directory");
 
-            //m_parentPath = directory.Parent != null ? directory.Parent.FullName : string.Empty;
             m_directory = directory;
             m_directoryPath = directory.FullName;
             int length = m_directoryPath.Length;
@@ -166,7 +175,7 @@ namespace ElFinder
 
         private string Rename(string relativePath, string newName, bool isDir)
         {
-            string src = Path.Combine(m_directoryPath, PathHelper.NormalizeRelativePath(relativePath));
+            string src = GetFullPath(relativePath);
             string dest = Path.Combine(System.IO.Directory.GetParent(src).FullName, newName);
             if (isDir)
                 System.IO.Directory.Move(src, dest);
@@ -177,11 +186,16 @@ namespace ElFinder
 
         private void Delete(string relativePath, bool isDir)
         {
-            string path = Path.Combine(m_directoryPath, PathHelper.NormalizeRelativePath(relativePath));
+            string path = GetFullPath(relativePath);
             if (isDir)
                 System.IO.Directory.Delete(path, true);
             else
                 File.Delete(path);
+        }
+
+        private string GetFullPath(string relativePath)
+        {
+            return Path.Combine(m_directoryPath, PathHelper.NormalizeRelativePath(relativePath));
         }
      
         private readonly DirectoryInfo m_directory;

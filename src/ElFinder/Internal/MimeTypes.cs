@@ -24,25 +24,23 @@ namespace ElFinder
             Assembly assembly = Assembly.GetExecutingAssembly();
             using (Stream stream = assembly.GetManifestResourceStream("ElFinder.Internal.mimeTypes.txt"))
             {
-                using (StreamReader reader = new StreamReader(stream))
+                StreamReader reader = new StreamReader(stream);
+                while (!reader.EndOfStream)
                 {
-                    while (!reader.EndOfStream)
+                    string line = reader.ReadLine();
+                    line = line.Trim();
+                    if (!string.IsNullOrWhiteSpace(line) && line[0] != '#')
                     {
-                        string line = reader.ReadLine();
-                        line = line.Trim();
-                        if (!string.IsNullOrWhiteSpace(line) && line[0] != '#')
+                        string[] parts = line.Split(' ');
+                        if (parts.Length > 1)
                         {
-                            string[] parts = line.Split(' ');
-                            if (parts.Length > 1)
+                            string mime = parts[0];
+                            for (int i = 1; i < parts.Length; i++)
                             {
-                                string mime = parts[0];
-                                for (int i = 1; i < parts.Length; i++)
+                                string ext = parts[i].ToLower();
+                                if (!m_mimeTypes.ContainsKey(ext))
                                 {
-                                    string ext = parts[i].ToLower();
-                                    if (!m_mimeTypes.ContainsKey(ext))
-                                    {
-                                        m_mimeTypes.Add(ext, mime);
-                                    }
+                                    m_mimeTypes.Add(ext, mime);
                                 }
                             }
                         }

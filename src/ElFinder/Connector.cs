@@ -351,7 +351,10 @@ namespace ElFinder
         {
             if (string.IsNullOrEmpty(target))
                 return Errors.MissedParameter(Commands.Get);
-            throw new NotImplementedException();
+            IFileInfo file = ParsePath(target) as IFileInfo;
+            if (!file.Exists)
+                return Errors.NotFound();
+            return new GetResponse(file.Root.GetText(file.RelativePath));
         }
 
         private JsonResponse Put(string target, string content)

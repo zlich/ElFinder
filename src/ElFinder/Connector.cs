@@ -62,22 +62,22 @@ namespace ElFinder
             if (m_roots.Count == 0)
                 return Errors.ErrorBackend();
             NameValueCollection parameters = request.QueryString.Count > 0 ? request.QueryString : request.Form;
-            string cmdName = parameters["cmd"];
-            if (string.IsNullOrEmpty(cmdName))
+            string commandName = parameters["cmd"];
+            if (string.IsNullOrEmpty(commandName))
                 return Errors.CommandNotFound();
 
             string target = parameters["target"];
             if (target != null && target.ToLower() == "null")
                 target = null;
-            switch (cmdName)
+            switch (commandName)
             {
                 case Commands.Open:
-                    if (!string.IsNullOrEmpty(parameters["init"]) && parameters["init"] == "1")
+                    if (GetBoolParam(parameters, "init"))
                         return Init(target);
                     else
-                        return Open(target, !string.IsNullOrEmpty(parameters["tree"]) && parameters["tree"] == "1");
-                case Commands.File:                 
-                    return File(target, !string.IsNullOrEmpty(parameters["download"]) && parameters["download"] == "1");
+                        return Open(target, GetBoolParam(parameters, "tree"));
+                case Commands.File:
+                    return File(target, GetBoolParam(parameters, "download"));
                 case Commands.Tree:
                     return Tree(target);
                 case Commands.Parents:
@@ -89,69 +89,34 @@ namespace ElFinder
                 case Commands.Rename:
                     return Rename(target, parameters["name"]);
                 case Commands.Remove:
-                        return Remove(GetTargetsArray(request));
+                    return Remove(GetTargetsArray(request));
                 case Commands.List:
                     return List(target);
                 case Commands.Get:
                     return Get(target);
                 case Commands.Put:
                     return Put(target, parameters["content"]);
-                case "paste":
-                    {
-                        IEnumerable<string> targets = GetTargetsArray(request);
-                        if (targets == null)
-                            Errors.MissedParameter("targets");
-                        string src = parameters["src"];
-                        if (string.IsNullOrEmpty(src))
-                            return Errors.MissedParameter("src");
-
-                        string dst = parameters["dst"];
-                        if (string.IsNullOrEmpty(dst))
-                            return Errors.MissedParameter("dst");
-
-                        return Paste(src, dst, targets, !string.IsNullOrEmpty(parameters["cut"]) && parameters["cut"] == "1");
-                    }
-                case "upload":
-                    if (string.IsNullOrEmpty(target))
-                        return Errors.MissedParameter(cmdName);
+                case Commands.Paste:
+                    return Paste(parameters["src"], parameters["dst"], GetTargetsArray(request), GetBoolParam(parameters, "cut"));
+                case Commands.Upload:
                     return Upload(target, request.Files);
-                case "duplicate":
-                    {
-                        IEnumerable<string> targets = GetTargetsArray(request);
-                        if (targets == null)
-                            Errors.MissedParameter("targets");
-                        return Duplicate(targets);
-                    }
-                case "tmb":
-                    {
-                        IEnumerable<string> targets = GetTargetsArray(request);
-                        if (targets == null)
-                            Errors.MissedParameter("targets");
-                        return Thumbs(targets);
-                    }
-                case "dim":
-                    {
-                        if (string.IsNullOrEmpty(target))
-                            return Errors.MissedParameter(cmdName);
-                        return Dim(target);
-                    }
-                case "resize":
-                    {
-                        if (string.IsNullOrEmpty(target))
-                            return Errors.MissedParameter(cmdName);
-                        switch (parameters["mode"])
-                        {
-                            case "resize":
-                                return Resize(target, int.Parse(parameters["width"]), int.Parse(parameters["height"]));
-                            case "crop":
-                                return Crop(target, int.Parse(parameters["x"]), int.Parse(parameters["y"]), int.Parse(parameters["width"]), int.Parse(parameters["height"]));
-                            case "rotate":
-                                return Rotate(target, int.Parse(parameters["degree"]));
-                            default:
-                                break;
-                        }
-                        return Errors.CommandNotFound();
-                    }
+                case Commands.Duplicate:
+                    return Duplicate(GetTargetsArray(request));
+                case Commands.Thumbnails:
+                    return Thumbnails(GetTargetsArray(request));
+                case Commands.Dimension:
+                    return Dimension(target);
+                case Commands.Resize:
+                    if (string.IsNullOrEmpty(target))
+                        return Errors.MissedParameter(commandName);
+                    string mode = parameters["mode"];
+                    if (mode == Commands.Resize)
+                        return Resize(target, int.Parse(parameters["width"]), int.Parse(parameters["height"]));
+                    if (mode == Commands.Crop)
+                        return Crop(target, int.Parse(parameters["x"]), int.Parse(parameters["y"]), int.Parse(parameters["width"]), int.Parse(parameters["height"]));
+                    if (mode == Commands.Rotate)
+                        return Rotate(target, int.Parse(parameters["degree"]));
+                    return Errors.CommandNotFound();
                 default:
                     return Errors.CommandNotFound();
             }
@@ -338,6 +303,9 @@ namespace ElFinder
 
         private JsonResponse Duplicate(IEnumerable<string> targets)
         {
+            if (targets == null)
+                Errors.MissedParameter("targets");
+
             throw new NotImplementedException();
         }
 
@@ -369,20 +337,36 @@ namespace ElFinder
         }
         private JsonResponse Paste(string source, string dest, IEnumerable<string> targets, bool isCut)
         {
+            if (targets == null)
+                Errors.MissedParameter("targets");
+            if (string.IsNullOrEmpty(source))
+                return Errors.MissedParameter("src");
+            if (string.IsNullOrEmpty(dest))
+                return Errors.MissedParameter("dst");
+
             throw new NotImplementedException();
         }
         private JsonResponse Upload(string target, HttpFileCollection targets)
         {
+            if (string.IsNullOrEmpty(target))
+                return Errors.MissedParameter(Commands.Upload);
+
             throw new NotImplementedException();
         }
 
-        private JsonResponse Thumbs(IEnumerable<string> targets)
+        private JsonResponse Thumbnails(IEnumerable<string> targets)
         {
+            if (targets == null)
+                Errors.MissedParameter("targets");
+
             throw new NotImplementedException();
         }
 
-        private JsonResponse Dim(string target)
+        private JsonResponse Dimension(string target)
         {
+            if (string.IsNullOrEmpty(target))
+                return Errors.MissedParameter(Commands.Dimension);
+
             throw new NotImplementedException();
         }
 
@@ -439,7 +423,7 @@ namespace ElFinder
                 return root.GetFile(relativePath);
         }
 
-        private IEnumerable<string> GetTargetsArray(HttpRequest request)
+        private static IEnumerable<string> GetTargetsArray(HttpRequest request)
         {
             string[] targets = request.Form.GetValues("targets");
             NameValueCollection parameters = request.QueryString.Count > 0 ? request.QueryString : request.Form;
@@ -453,6 +437,11 @@ namespace ElFinder
                 targets = t.Split(',');
             }
             return targets;
+        }
+
+        private static bool GetBoolParam(NameValueCollection parameters, string name)
+        {
+            return !string.IsNullOrEmpty(parameters[name]) && parameters[name] == "1";
         }
         
         private readonly List<IRoot> m_roots;

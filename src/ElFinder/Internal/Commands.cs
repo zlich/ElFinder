@@ -19,5 +19,13 @@ namespace ElFinder
         public const string List = "ls";
         public const string Get = "get";
         public const string Put = "put";
+        public const string Paste = "paste";
+        public const string Upload = "upload";
+        public const string Duplicate = "duplicate";
+        public const string Thumbnails = "tmb";
+        public const string Dimension = "dim";
+        public const string Resize = "resize";
+        public const string Crop = "crop";
+        public const string Rotate = "rotate";
     }
 }

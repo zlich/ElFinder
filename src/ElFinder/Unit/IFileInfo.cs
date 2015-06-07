@@ -58,7 +58,7 @@ namespace ElFinder
         {
             get
             {
-                Contract.Ensures(!string.IsNullOrEmpty(Contract.Result<string>()));
+                Contract.Ensures(Contract.Result<string>() != null);
                 return null;
             }
         }

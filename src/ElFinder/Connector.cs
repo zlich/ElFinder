@@ -71,73 +71,28 @@ namespace ElFinder
                 target = null;
             switch (cmdName)
             {
-                case "open":
+                case Commands.Open:
                     if (!string.IsNullOrEmpty(parameters["init"]) && parameters["init"] == "1")
-                    {
                         return Init(target);
-                    }
                     else
-                    {
-                        if (string.IsNullOrEmpty(target))
-                            return Errors.MissedParameter(cmdName);
                         return Open(target, !string.IsNullOrEmpty(parameters["tree"]) && parameters["tree"] == "1");
-                    }
-                case "file":
-                    if (string.IsNullOrEmpty(target))
-                        return Errors.MissedParameter(cmdName);
+                case Commands.File:                 
                     return File(target, !string.IsNullOrEmpty(parameters["download"]) && parameters["download"] == "1");
-                case "tree":
-                    if (string.IsNullOrEmpty(target))
-                        return Errors.MissedParameter(cmdName);
+                case Commands.Tree:
                     return Tree(target);
-                case "parents":
-                    if (string.IsNullOrEmpty(target))
-                        return Errors.MissedParameter(cmdName);
+                case Commands.Parents:
                     return Parents(target);
-                case "mkdir":
-                    {
-                        if (string.IsNullOrEmpty(target))
-                            return Errors.MissedParameter(cmdName);
-                        string name = parameters["name"];
-
-                        if (string.IsNullOrEmpty(name))
-                            return Errors.MissedParameter("name");
-                        return MakeDir(target, name);
-                    }
-                case "mkfile":
-                    {
-                        if (string.IsNullOrEmpty(target))
-                            return Errors.MissedParameter(cmdName);
-                        string name = parameters["name"];
-
-                        if (string.IsNullOrEmpty(name))
-                            return Errors.MissedParameter("name");
-                        return MakeFile(target, name);
-                    }
-                case "rename":
-                    {
-                        if (string.IsNullOrEmpty(target))
-                            return Errors.MissedParameter(cmdName);
-                        string name = parameters["name"];
-
-                        if (string.IsNullOrEmpty(name))
-                            return Errors.MissedParameter("name");
-                        return Rename(target, name);
-                    }
-                case "rm":
-                    {
-                        IEnumerable<string> targets = GetTargetsArray(request);
-                        if (targets == null)
-                            return Errors.MissedParameter("targets");
-                        return Remove(targets);
-                    }
-                case "ls":
-                    if (string.IsNullOrEmpty(target))
-                        return Errors.MissedParameter(cmdName);
+                case Commands.MakeDir:
+                    return MakeDir(target, parameters["name"]);
+                case Commands.MakeFile:
+                    return MakeFile(target, parameters["name"]);
+                case Commands.Rename:
+                    return Rename(target, parameters["name"]);
+                case Commands.Remove:
+                        return Remove(GetTargetsArray(request));
+                case Commands.List:
                     return List(target);
-                case "get":
-                    if (string.IsNullOrEmpty(target))
-                        return Errors.MissedParameter(cmdName);
+                case Commands.Get:
                     return Get(target);
                 case "put":
                     if (string.IsNullOrEmpty(target))
@@ -210,6 +165,8 @@ namespace ElFinder
 
         private JsonResponse Open(string target, bool tree)
         {
+            if (string.IsNullOrEmpty(target))
+                return Errors.MissedParameter(Commands.Open);
             IDirectoryInfo directory = ParsePath(target) as IDirectoryInfo;
             if (directory == null)
                 return Errors.NotFound();
@@ -259,6 +216,9 @@ namespace ElFinder
 
         private JsonResponse Parents(string target)
         {
+            if (string.IsNullOrEmpty(target))
+                return Errors.MissedParameter(Commands.Parents);
+
             IDirectoryInfo directory = ParsePath(target) as IDirectoryInfo;
             if (directory == null)
                 return Errors.NotFound();
@@ -283,6 +243,9 @@ namespace ElFinder
 
         private JsonResponse Tree(string target)
         {
+            if (string.IsNullOrEmpty(target))
+                return Errors.MissedParameter(Commands.Tree);
+
             IDirectoryInfo directory = ParsePath(target) as IDirectoryInfo;
             if (directory == null)
                 return Errors.NotFound();
@@ -297,9 +260,13 @@ namespace ElFinder
 
         private JsonResponse List(string target)
         {
+            if (string.IsNullOrEmpty(target))
+                return Errors.MissedParameter(Commands.List);
+
             IDirectoryInfo directory = ParsePath(target) as IDirectoryInfo;
             if (directory == null)
                 return Errors.NotFound();
+
             ListResponse answer = new ListResponse();
             foreach (IUnitInfo item in directory.GetUnits())
             {
@@ -310,6 +277,11 @@ namespace ElFinder
 
         private JsonResponse MakeDir(string target, string name)
         {
+            if (string.IsNullOrEmpty(target))
+                return Errors.MissedParameter(Commands.MakeDir);
+            if (string.IsNullOrEmpty(name))
+                return Errors.MissedParameter("name");
+
             IDirectoryInfo directory = ParsePath(target) as IDirectoryInfo;
             if (directory == null)
                 return Errors.NotFound();
@@ -319,6 +291,11 @@ namespace ElFinder
 
         private JsonResponse MakeFile(string target, string name)
         {
+            if (string.IsNullOrEmpty(target))
+                return Errors.MissedParameter(Commands.MakeFile);
+            if (string.IsNullOrEmpty(name))
+                return Errors.MissedParameter("name");
+
             IDirectoryInfo directory = ParsePath(target) as IDirectoryInfo;
             if (directory == null)
                 return Errors.NotFound();
@@ -326,17 +303,22 @@ namespace ElFinder
             return new AddResponse(newFile);
         }
 
-        private JsonResponse Rename(string target, string newName)
+        private JsonResponse Rename(string target, string name)
         {
+            if (string.IsNullOrEmpty(target))
+                return Errors.MissedParameter(Commands.Rename);
+            if (string.IsNullOrEmpty(name))
+                return Errors.MissedParameter("name");
+
             IUnitInfo unit = ParsePath(target);
             ReplaceResponse response = new ReplaceResponse();
             response.Removed.Add(target);
 
             IUnitInfo renamed;
             if (unit is IDirectoryInfo)
-                renamed = unit.Root.RenameDirectory(unit.RelativePath, newName);
+                renamed = unit.Root.RenameDirectory(unit.RelativePath, name);
             else
-                renamed = unit.Root.RenameFile(unit.RelativePath, newName);
+                renamed = unit.Root.RenameFile(unit.RelativePath, name);
 
             response.Added.Add(renamed.ToDTO());
             return response;
@@ -344,7 +326,8 @@ namespace ElFinder
 
         private JsonResponse Remove(IEnumerable<string> targets)
         {
-            Contract.Requires(targets != null);
+            if (targets == null)
+                return Errors.MissedParameter("targets");
 
             RemoveResponse response = new RemoveResponse();
             foreach (string target in targets)
@@ -366,6 +349,8 @@ namespace ElFinder
 
         private JsonResponse Get(string target)
         {
+            if (string.IsNullOrEmpty(target))
+                return Errors.MissedParameter(Commands.Get);
             throw new NotImplementedException();
         }
 
@@ -409,6 +394,8 @@ namespace ElFinder
 
         private ResponseBase File(string target, bool download)
         {
+            if (string.IsNullOrEmpty(target))
+                return Errors.MissedParameter(Commands.File);
             IUnitInfo unit = ParsePath(target);
             if (unit is IDirectoryInfo)
                 return new HttpStatusCodeResponse(HttpStatusCode.Forbidden, "You can not download whole folder");

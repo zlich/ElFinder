@@ -92,6 +92,7 @@
   <ItemGroup>
     <Compile Include="AccessManager.cs" />
     <Compile Include="Connector.cs" />
+    <Compile Include="Internal\Commands.cs" />
     <Compile Include="Internal\HttpCacheHelper.cs" />
     <Compile Include="Internal\Response\DownloadResponse.cs" />
     <Compile Include="Internal\Response\Errors.cs" />

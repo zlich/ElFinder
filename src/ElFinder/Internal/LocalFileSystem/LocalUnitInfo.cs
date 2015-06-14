@@ -42,6 +42,8 @@ namespace ElFinder
             get { return (m_info.Attributes & FileAttributes.Hidden) == FileAttributes.Hidden; }
         }
 
+        public abstract IDirectoryInfo Parent { get; }
+
         public abstract string MimeType { get; }
 
         public abstract UnitDTO ToDTO();

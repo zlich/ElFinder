@@ -11,7 +11,7 @@ namespace ElFinder
             get { return "directory"; }
         }
 
-        public IDirectoryInfo Parent
+        public override IDirectoryInfo Parent
         {
             get { return new LocalDirectoryInfo(FileSystemRoot, DirectoryInfo.Parent); }
         }
@@ -61,11 +61,13 @@ namespace ElFinder
         public void CutTo(IDirectoryInfo output)
         {
             LocalDirectoryInfo localDir = output as LocalDirectoryInfo;
-            //if (localDir != null)
-            //{
-            //    DirectoryInfo.MoveTo(localDir.DirectoryInfo.FullName);
-            //}
-            //else
+            if (localDir != null)
+            {
+                if (Directory.Exists(localDir.DirectoryInfo.FullName))
+                    localDir.Delete();
+                DirectoryInfo.MoveTo(localDir.DirectoryInfo.FullName);
+            }
+            else
             {
                 CopyTo(output);
                 Delete();

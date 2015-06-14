@@ -10,11 +10,6 @@ namespace ElFinder
     public interface IDirectoryInfo : IUnitInfo
     {
         /// <summary>
-        /// Gets parent directory or <c>null</c> if directory is root.
-        /// </summary>
-        IDirectoryInfo Parent { get; }
-
-        /// <summary>
         /// Gets subdirectories.
         /// </summary>
         /// <returns>The collection of subdirectories.</returns>
@@ -48,15 +43,6 @@ namespace ElFinder
     [ContractClassFor(typeof(IDirectoryInfo))]
     internal abstract class ContractForIDirectoryInfo : IDirectoryInfo
     {
-        IDirectoryInfo IDirectoryInfo.Parent
-        {
-            get
-            {
-                Contract.Ensures(Contract.Result<IDirectoryInfo>() != null);
-                return null;
-            }
-        }
-
         IEnumerable<IDirectoryInfo> IDirectoryInfo.GetDirectories()
         {
             Contract.Ensures(Contract.Result<IEnumerable<IDirectoryInfo>>() != null);
@@ -96,6 +82,8 @@ namespace ElFinder
         public abstract string RelativePath { get; }
 
         public abstract bool IsHidden { get; }
+
+        public abstract IDirectoryInfo Parent { get; }
 
         public abstract void Delete();
 

@@ -315,9 +315,72 @@ namespace ElFinder
         private JsonResponse Duplicate(IEnumerable<string> targets)
         {
             if (targets == null)
-                Errors.MissedParameter("targets");
+                return Errors.MissedParameter("targets");
 
-            throw new NotImplementedException();
+            AddResponse response = new AddResponse();
+            foreach (var target in targets)
+            {
+                IUnitInfo unit = ParsePath(target);
+                IRoot root = unit.Root;
+                string parentDir = unit.Parent.RelativePath;
+
+                IDirectoryInfo dir = unit as IDirectoryInfo;
+                if (dir != null)
+                {
+                    string newName =  dir.Name + " copy";
+                    IDirectoryInfo newDirectory = root.GetDirectory(PathHelper.Combine(parentDir, newName));
+
+                    if (!newDirectory.Exists)
+                    {
+                        newDirectory = root.CreateDirectory(parentDir, newName);                        
+                    }
+                    else
+                    {
+                        for (int i = 1; i < 100; i++)
+                        {
+                            newName = dir.Name + " copy " + i.ToString();
+                            if (!root.GetDirectory(PathHelper.Combine(parentDir, newName)).Exists)
+                            {
+                                newDirectory = root.CreateDirectory(parentDir, newName);      
+                                break;
+                            }
+                        }
+                    }
+                    dir.CopyTo(newDirectory);
+                    response.Added.Add(root.GetDirectory(newDirectory.RelativePath).ToDTO());
+                }
+                else
+                {
+                    IFileInfo file = unit as IFileInfo;
+                    if (file != null)
+                    {
+                        string name = file.Name;
+                        string ext = file.Extension;
+                        name = name.Substring(0, name.Length - ext.Length);
+                        string newName = name + " copy" + ext;
+                        IFileInfo newFile = root.GetFile(PathHelper.Combine(parentDir, newName));
+                        if(!newFile.Exists)
+                        {
+                            file.CopyTo(newFile);
+                        }
+                        else
+                        {
+                             for (int i = 1; i < 100; i++)
+                             {
+                                 newName = name + " copy " + i.ToString() + ext;
+                                 newFile = root.GetFile(PathHelper.Combine(parentDir, newName));
+                                 if (!newFile.Exists)
+                                 {
+                                     file.CopyTo(newFile);
+                                     break;
+                                 }
+                             }
+                        }
+                        response.Added.Add(root.GetFile(newFile.RelativePath).ToDTO());
+                    }
+                }
+            }
+            return response;
         }
 
         private JsonResponse Get(string target)
@@ -369,11 +432,14 @@ namespace ElFinder
             ReplaceResponse response = new ReplaceResponse();
             foreach (string target in targets)
             {
-                IUnitInfo targetUnit = ParsePath(target);
-                IFileInfo file = targetUnit as IFileInfo;
+                IUnitInfo unit = ParsePath(target);
+                IRoot root = unit.Root;
+                string newPath = PathHelper.Combine(directory.RelativePath, unit.Name);
+
+                IFileInfo file = unit as IFileInfo;
                 if(file != null && file.Exists)
                 {
-                    IFileInfo newFile = directory.Root.GetFile(directory.RelativePath + "/" + file.Name);
+                    IFileInfo newFile = root.GetFile(newPath);
                     if (!newFile.Exists)
                     {
                         if(isCut)
@@ -385,17 +451,15 @@ namespace ElFinder
                         {
                             file.CopyTo(newFile);
                         }
-                        newFile = directory.Root.GetFile(directory.RelativePath + "/" + file.Name);
-                        if (newFile.Exists)
-                            response.Added.Add(newFile.ToDTO());
+                        response.Added.Add(root.GetFile(newPath).ToDTO());
                     }
                 }
                 else
                 {
-                    IDirectoryInfo dir = targetUnit as IDirectoryInfo;
+                    IDirectoryInfo dir = unit as IDirectoryInfo;
                     if (dir != null && dir.Exists)
                     {
-                        IDirectoryInfo newDir = directory.Root.CreateDirectory(directory.RelativePath, dir.Name);
+                        IDirectoryInfo newDir = root.CreateDirectory(directory.RelativePath, dir.Name);
                         if (isCut)
                         {
                             dir.CutTo(newDir);
@@ -405,7 +469,7 @@ namespace ElFinder
                         {
                             dir.CopyTo(newDir);
                         }
-                        response.Added.Add(newDir.ToDTO());
+                        response.Added.Add(root.GetDirectory(newPath).ToDTO());
                     }
                 }
             }
@@ -508,6 +572,8 @@ namespace ElFinder
         {
             return !string.IsNullOrEmpty(parameters[name]) && parameters[name] == "1";
         }
+
+        
         
         private readonly List<IRoot> m_roots;
         private readonly string m_volumePrefix = "v";

@@ -21,11 +21,6 @@ namespace ElFinder
         string Extension { get; }
 
         /// <summary>
-        /// Gets parent directory.
-        /// </summary>
-        IDirectoryInfo Directory { get; }
-
-        /// <summary>
         /// Copies file to stream.
         /// </summary>
         /// <param name="output">The output stream.</param>
@@ -86,15 +81,6 @@ namespace ElFinder
             }
         }
 
-        IDirectoryInfo IFileInfo.Directory
-        {
-            get
-            {
-                Contract.Ensures(Contract.Result<IDirectoryInfo>() != null);
-                return null;
-            }
-        }
-
         void IFileInfo.CopyTo(Stream output)
         {
             Contract.Requires(output != null);
@@ -139,6 +125,8 @@ namespace ElFinder
         public abstract string RelativePath { get; }
 
         public abstract bool IsHidden { get; }
+
+        public abstract IDirectoryInfo Parent { get; }
 
         public abstract void Delete();
 

@@ -29,7 +29,7 @@ namespace ElFinder
             get { return FileInfo.Length; }
         }
 
-        public IDirectoryInfo Directory
+        public override IDirectoryInfo Parent
         {
             get { return new LocalDirectoryInfo(FileSystemRoot, FileInfo.Directory); }
         }
@@ -59,7 +59,7 @@ namespace ElFinder
             response.UnixTimeStamp = (long)(FileInfo.LastWriteTimeUtc - UnixOrigin).TotalSeconds;
             response.Mime = MimeType;
             response.Hash = Root.VolumeId + PathHelper.EncodePath(RelativePath);
-            response.ParentHash = Root.VolumeId + PathHelper.EncodePath(Directory.RelativePath);
+            response.ParentHash = Root.VolumeId + PathHelper.EncodePath(Parent.RelativePath);
             return response;
         }
 
@@ -79,11 +79,11 @@ namespace ElFinder
         public void CopyTo(IFileInfo output)
         {
             LocalFileInfo localSystemFile = output as LocalFileInfo;
-            //if (localSystemFile != null) // fast copy for localsystem units
-            //{
-            //    File.Copy(FileInfo.FullName, localSystemFile.FileInfo.FullName, true);
-            //}
-            //else
+            if (localSystemFile != null) // fast copy for localsystem units
+            {
+                File.Copy(FileInfo.FullName, localSystemFile.FileInfo.FullName, true);
+            }
+            else
             {
                 using (Stream writeTo = output.OpenWrite())
                 {
@@ -95,11 +95,11 @@ namespace ElFinder
         public void CutTo(IFileInfo output)
         {
             LocalFileInfo localSystemFile = output as LocalFileInfo;
-            //if (localSystemFile != null) // fast move for localsystem units
-            //{
-            //    File.Move(FileInfo.FullName, localSystemFile.FileInfo.FullName);
-            //}
-            //else
+            if (localSystemFile != null) // fast move for localsystem units
+            {
+                File.Move(FileInfo.FullName, localSystemFile.FileInfo.FullName);
+            }
+            else
             {
                 using (Stream writeTo = output.OpenWrite())
                 {

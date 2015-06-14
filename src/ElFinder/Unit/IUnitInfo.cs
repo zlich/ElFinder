@@ -38,6 +38,11 @@ namespace ElFinder
         /// Gets a value indicates is unit hidden.
         /// </summary>
         bool IsHidden { get; }
+
+        /// <summary>
+        /// Gets parent directory.
+        /// </summary>
+        IDirectoryInfo Parent { get; }
         
         /// <summary>
         /// Permanently removes file or directory.
@@ -99,6 +104,16 @@ namespace ElFinder
         {
             get { return true; }
         }
+
+        IDirectoryInfo IUnitInfo.Parent
+        {
+            get
+            {
+                Contract.Ensures(Contract.Result<IDirectoryInfo>() != null);
+                return null;
+            }
+        }
+
 
         UnitDTO IUnitInfo.ToDTO()
         {

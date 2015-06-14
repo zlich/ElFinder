@@ -38,36 +38,13 @@ namespace ElFinder
             return path.Substring(start, length);
         }
 
-        //public static string GetDuplicatedName(IFileInfo file)
-        //{
-        //    Contract.Requires(file != null);
-        //    Contract.Ensures(Contract.Result<string>() != null);
+        public static string Combine(string relativeDir, string name)
+        {
+            Contract.Requires(relativeDir != null);
+            Contract.Requires(name != null);
+            Contract.Ensures(Contract.Result<string>() != null);
 
-        //    //var parentPath = file.DirectoryName;
-        //    var name = Path.GetFileNameWithoutExtension(file.Name);
-        //    var ext = file.Extension;
-
-        //    var newName = string.Format(@"{0}\{1} copy{2}", parentPath, name, ext);            
-        //    if (!File.Exists(newName))
-        //    {
-        //        return newName;               
-        //    }
-        //    else
-        //    {
-        //        bool finded = false;
-        //        for (int i = 1; i < 10 && !finded; i++)
-        //        {
-        //            newName = string.Format(@"{0}\{1} copy {2}{3}", parentPath, name, i, ext);
-        //            if (!File.Exists(newName))
-        //                finded = true;
-        //        }
-        //        if (!finded)
-        //            newName = string.Format(@"{0}\{1} copy {2}{3}", parentPath, name, Guid.NewGuid(), ext);
-        //    }
-
-        //    return newName;
-        //}
-
-
+            return relativeDir + "/" + name;
+        }
     }
 }

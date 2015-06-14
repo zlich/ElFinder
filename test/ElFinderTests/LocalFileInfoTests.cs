@@ -73,7 +73,7 @@ namespace ElFinderTests
             LocalFileInfo info = new LocalFileInfo(root, path);
 
             DirectoryInfo dir = new DirectoryInfo(TestHelper.TestDataPath);
-            Assert.AreEqual(dir.Name, info.Directory.Name);
+            Assert.AreEqual(dir.Name, info.Parent.Name);
         }
 
         [Test]

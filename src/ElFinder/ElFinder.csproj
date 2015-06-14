@@ -124,6 +124,7 @@
     <Compile Include="Internal\Response\ThumbsResponse.cs" />
     <Compile Include="Internal\Response\TreeResponse.cs" />
     <Compile Include="Root\IRoot.cs" />
+    <Compile Include="Root\IUnitsRepository.cs" />
     <Compile Include="ThumbnailsManager.cs" />
     <Compile Include="Unit\IUnitInfo.cs" />
     <Compile Include="Unit\IDirectoryInfo.cs" />

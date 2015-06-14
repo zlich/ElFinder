@@ -15,5 +15,10 @@ namespace ElFinder
             Contract.Requires(newFile != null);
             Added = new List<UnitDTO>() { newFile.ToDTO() };
         }
+
+        public AddResponse()
+        {
+            Added = new List<UnitDTO>();
+        }
     }
 }

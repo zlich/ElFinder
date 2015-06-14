@@ -8,7 +8,7 @@ using System.Web;
 namespace ElFinderTests
 {
     [TestFixture]
-    public class ConnectorTests
+    public class LocalSystemConnectorTests : LocalSystemTestsBase
     {
         [Test]
         public void TestRoots()
@@ -208,6 +208,21 @@ namespace ElFinderTests
             {
                 Assert.AreEqual("custom_content", reader.ReadToEnd());
             }
+        }
+
+        [Test]
+        public void TestPaste()
+        {
+            Connector connector = CreateTestConnector();
+            //check missed parameter
+            ErrorResponse error = GetResponse<ErrorResponse>(connector, "cmd=paste");
+
+            UnitDTO dest = connector.Roots[0].GetDirectory("subfolder/1").ToDTO();
+            error = GetResponse<ErrorResponse>(connector, "cmd=paste&dst=" + dest.Hash);
+
+            UnitDTO target = connector.Roots[0].GetDirectory("subfolder/2").ToDTO();
+            ReplaceResponse response = GetResponse<ReplaceResponse>(connector, "cmd=paste&dst=" + dest.Hash + "&targets=" + target.Hash);
+            Assert.AreEqual(1, response.Added.Count);
         }
 
         private static T GetResponse<T>(Connector connector, string query) where T : ResponseBase

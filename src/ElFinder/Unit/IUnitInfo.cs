@@ -4,45 +4,50 @@ using System.Diagnostics.Contracts;
 namespace ElFinder
 {    
     /// <summary>
-    /// Represents generic unit - file or directory
+    /// Represents generic unit - file or directory.
     /// </summary>
     [ContractClass(typeof(ConstractForIUnitInfo))]
     public interface IUnitInfo
     {
         /// <summary>
-        /// Get name of unit
+        /// Get name of unit.
         /// </summary>
         string Name { get; }
 
         /// <summary>
-        /// Gets parent root
+        /// Gets parent root.
         /// </summary>
         IRoot Root { get; }
 
         /// <summary>
-        /// Gets unit mime type
+        /// Gets unit mime type.
         /// </summary>
         string MimeType { get; }
 
         /// <summary>
-        /// Gets a value indicates is unit exists
+        /// Gets a value indicates is unit exists.
         /// </summary>
         bool Exists { get; }
 
         /// <summary>
-        /// Get relative path to root
+        /// Get relative path to root.
         /// </summary>
         string RelativePath { get; }
 
         /// <summary>
-        /// Gets a value indicates is unit hidden
+        /// Gets a value indicates is unit hidden.
         /// </summary>
         bool IsHidden { get; }
+        
+        /// <summary>
+        /// Permanently removes file or directory.
+        /// </summary>
+        void Delete();
 
         /// <summary>
-        /// Converts unit to data-trasfer object
+        /// Converts unit to data-trasfer object.
         /// </summary>
-        /// <returns>The data-transfer object</returns>
+        /// <returns>The data-transfer object.</returns>
         UnitDTO ToDTO();
     }
 
@@ -100,5 +105,6 @@ namespace ElFinder
             Contract.Ensures(Contract.Result<UnitDTO>() != null);
             return null;
         }
+        public abstract void Delete();
     }
 }

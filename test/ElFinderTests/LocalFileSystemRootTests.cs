@@ -7,7 +7,7 @@ using System.IO;
 namespace ElFinderTests
 {
     [TestFixture]
-    public class LocalFileSystemRootTests
+    public class LocalFileSystemRootTests : LocalSystemTestsBase
     {
         [Test]
         public void TestVolumeId()

@@ -29,8 +29,31 @@ namespace ElFinder
         /// Copies file to stream.
         /// </summary>
         /// <param name="output">The output stream.</param>
-        /// <exception cref="System.ArgumentNullException">Trown when output is <c>null</c>.</exception>
         void CopyTo(Stream output);
+
+        /// <summary>
+        /// Copies file to another file info.
+        /// </summary>
+        /// <param name="output">The output fileInfo.</param>
+        void CopyTo(IFileInfo output);
+
+        /// <summary>
+        /// Cuts file to another file info.
+        /// </summary>
+        /// <param name="output">The output fileInfo.</param>
+        void CutTo(IFileInfo output);
+
+        /// <summary>
+        /// Opens stream for read file.
+        /// </summary>
+        /// <returns>The stream for read file.</returns>
+        Stream OpenRead();
+
+        /// <summary>
+        /// Opens stream for write file.
+        /// </summary>
+        /// <returns>The stream for write file.</returns>
+        Stream OpenWrite();
 
         /// <summary>
         /// Is this file cached in HttpRequest.
@@ -77,6 +100,28 @@ namespace ElFinder
             Contract.Requires(output != null);
         }
 
+        void IFileInfo.CopyTo(IFileInfo output)
+        {
+            Contract.Requires(output != null);
+        }
+
+        void IFileInfo.CutTo(IFileInfo output)
+        {
+            Contract.Requires(output != null);
+        }
+
+        Stream IFileInfo.OpenRead()
+        {
+            Contract.Ensures(Contract.Result<Stream>() != null);
+            return null;
+        }
+
+        Stream IFileInfo.OpenWrite()
+        {
+            Contract.Ensures(Contract.Result<Stream>() != null);
+            return null;
+        }
+
         bool IFileInfo.IsFileFromCache(HttpRequest request, HttpResponse response)
         {
             return true;
@@ -94,6 +139,8 @@ namespace ElFinder
         public abstract string RelativePath { get; }
 
         public abstract bool IsHidden { get; }
+
+        public abstract void Delete();
 
         public abstract UnitDTO ToDTO();
     }

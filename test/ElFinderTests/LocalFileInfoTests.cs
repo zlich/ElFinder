@@ -5,7 +5,7 @@ using System.IO;
 namespace ElFinderTests
 {
     [TestFixture]
-    public class LocalFileInfoTests
+    public class LocalFileInfoTests : LocalSystemTestsBase
     {
         [Test]
         public void TestName()
@@ -124,14 +124,17 @@ namespace ElFinderTests
         }
 
         [Test]
-        public void TestCopyTo()
+        public void TestOpenReader()
         {
             string path = TestHelper.GetTestDataPath("testText.txt");
             LocalFileSystemRoot root = new LocalFileSystemRoot(TestHelper.TestDataPath);
             LocalFileInfo info = new LocalFileInfo(root, path);
             using (MemoryStream stream = new MemoryStream())
             {
-                info.CopyTo(stream);
+                using(Stream reader =  info.OpenRead())
+                {
+                    reader.CopyTo(stream);
+                }
                 Assert.AreEqual(TestHelper.GetFileHash(path), TestHelper.GetDataHash(stream.ToArray()));
             }
         }

@@ -39,6 +39,39 @@ namespace ElFinder
                 });
         }
 
+        public override void Delete()
+        {
+            Directory.Delete(DirectoryInfo.FullName, true);
+        }
+
+        public void CopyTo(IDirectoryInfo output)
+        {
+            foreach (IFileInfo item in GetFiles())
+            {
+                IFileInfo newFile = output.Root.GetFile(output.RelativePath + "/" + item.Name);
+                item.CopyTo(newFile);
+            }
+            foreach (IDirectoryInfo item in GetDirectories())
+            {
+                IDirectoryInfo newDir = output.Root.CreateDirectory(output.RelativePath, item.Name);
+                item.CopyTo(newDir);
+            }
+        }
+
+        public void CutTo(IDirectoryInfo output)
+        {
+            LocalDirectoryInfo localDir = output as LocalDirectoryInfo;
+            //if (localDir != null)
+            //{
+            //    DirectoryInfo.MoveTo(localDir.DirectoryInfo.FullName);
+            //}
+            //else
+            {
+                CopyTo(output);
+                Delete();
+            }
+        }
+
         public override UnitDTO ToDTO()
         {
             UnitDTO response;

@@ -46,6 +46,8 @@ namespace ElFinder
 
         public abstract UnitDTO ToDTO();
 
+        public abstract void Delete();
+
         protected LocalUnitInfo(LocalFileSystemRoot root, FileSystemInfo info)
         {
             Contract.Requires(root != null);

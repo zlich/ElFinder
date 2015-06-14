@@ -95,8 +95,8 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
-    <Compile Include="ConnectorTests.cs" />
-    <Compile Include="LocalSystemSetUp.cs" />
+    <Compile Include="LocalSystemConnectorTests.cs" />
+    <Compile Include="LocalSystemTestsBase.cs" />
     <Compile Include="MemoryWriterMock.cs" />
     <Compile Include="LocalDirectoryInfoTests.cs" />
     <Compile Include="LocalFileSystemRootTests.cs" />

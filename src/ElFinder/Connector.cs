@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics.Contracts;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
@@ -97,7 +98,7 @@ namespace ElFinder
                 case Commands.Put:
                     return Put(target, parameters["content"]);
                 case Commands.Paste:
-                    return Paste(parameters["src"], parameters["dst"], GetTargetsArray(request), GetBoolParam(parameters, "cut"));
+                    return Paste(parameters["dst"], GetTargetsArray(request), GetBoolParam(parameters, "cut"));
                 case Commands.Upload:
                     return Upload(target, request.Files);
                 case Commands.Duplicate:
@@ -271,15 +272,21 @@ namespace ElFinder
 
             IUnitInfo unit = ParsePath(target);
             ReplaceResponse response = new ReplaceResponse();
-            response.Removed.Add(target);
 
-            IUnitInfo renamed;
-            if (unit is IDirectoryInfo)
-                renamed = unit.Root.RenameDirectory(unit.RelativePath, name);
-            else
-                renamed = unit.Root.RenameFile(unit.RelativePath, name);
-
-            response.Added.Add(renamed.ToDTO());
+            try
+            {
+                IUnitInfo renamed;
+                if (unit is IDirectoryInfo)
+                    renamed = unit.Root.RenameDirectory(unit.RelativePath, name);
+                else
+                    renamed = unit.Root.RenameFile(unit.RelativePath, name);
+                response.Removed.Add(target);
+                response.Added.Add(renamed.ToDTO());     
+            }
+            catch(SystemException)
+            {
+                return Errors.AccessDenied();
+            }
             return response;
         }
 
@@ -291,12 +298,16 @@ namespace ElFinder
             RemoveResponse response = new RemoveResponse();
             foreach (string target in targets)
             {
-                IUnitInfo item = ParsePath(target);
-                response.Removed.Add(target);
-                if (item is IDirectoryInfo)
-                    item.Root.DeleteDirectory(item.RelativePath);
-                else
-                    item.Root.DeleteFile(item.RelativePath);
+                try
+                {
+                    IUnitInfo item = ParsePath(target);
+                    response.Removed.Add(target);
+                    item.Delete();
+                }
+                catch (SystemException)
+                {
+                    return Errors.AccessDenied();
+                }
             }
             return response;
         }
@@ -316,35 +327,89 @@ namespace ElFinder
             IFileInfo file = ParsePath(target) as IFileInfo;
             if (file == null || !file.Exists)
                 return Errors.NotFound();
-            return new GetResponse(file.Root.GetText(file.RelativePath));
+
+            string content = string.Empty;
+            using (StreamReader reader = new StreamReader(file.OpenRead()))
+            {
+                content = reader.ReadToEnd();
+            }
+            return new GetResponse(content);
         }
 
         private JsonResponse Put(string target, string content)
         {
             if (string.IsNullOrEmpty(target))
                 return Errors.MissedParameter(Commands.Put);
-            if (string.IsNullOrEmpty(content))
+            if (content == null)
                 return Errors.MissedParameter("content");
 
             IFileInfo file = ParsePath(target) as IFileInfo;
             if (file == null || !file.Exists)
                 return Errors.NotFound();
-            file.Root.PutText(file.RelativePath, content);
+            using (StreamWriter writer = new StreamWriter(file.OpenWrite()))
+            {
+                writer.Write(content);
+            }
 
             ChangedResponse response = new ChangedResponse();
-            response.Changed.Add((FileDTO)file.ToDTO());
+            response.Changed.Add((FileDTO)file.Root.GetFile(file.RelativePath).ToDTO());
             return response;
         }
-        private JsonResponse Paste(string source, string dest, IEnumerable<string> targets, bool isCut)
+        private JsonResponse Paste(string dest, IEnumerable<string> targets, bool isCut)
         {
             if (targets == null)
-                Errors.MissedParameter("targets");
-            if (string.IsNullOrEmpty(source))
-                return Errors.MissedParameter("src");
+                return Errors.MissedParameter("targets");
             if (string.IsNullOrEmpty(dest))
                 return Errors.MissedParameter("dst");
 
-            throw new NotImplementedException();
+            IDirectoryInfo directory = ParsePath(dest) as IDirectoryInfo;
+            if (directory == null)
+                return Errors.NotFound();
+
+            ReplaceResponse response = new ReplaceResponse();
+            foreach (string target in targets)
+            {
+                IUnitInfo targetUnit = ParsePath(target);
+                IFileInfo file = targetUnit as IFileInfo;
+                if(file != null && file.Exists)
+                {
+                    IFileInfo newFile = directory.Root.GetFile(directory.RelativePath + "/" + file.Name);
+                    if (!newFile.Exists)
+                    {
+                        if(isCut)
+                        {
+                            file.CutTo(newFile);
+                            response.Removed.Add(target);
+                        }
+                        else
+                        {
+                            file.CopyTo(newFile);
+                        }
+                        newFile = directory.Root.GetFile(directory.RelativePath + "/" + file.Name);
+                        if (newFile.Exists)
+                            response.Added.Add(newFile.ToDTO());
+                    }
+                }
+                else
+                {
+                    IDirectoryInfo dir = targetUnit as IDirectoryInfo;
+                    if (dir != null && dir.Exists)
+                    {
+                        IDirectoryInfo newDir = directory.Root.CreateDirectory(directory.RelativePath, dir.Name);
+                        if (isCut)
+                        {
+                            dir.CutTo(newDir);
+                            response.Removed.Add(target);
+                        }
+                        else
+                        {
+                            dir.CopyTo(newDir);
+                        }
+                        response.Added.Add(newDir.ToDTO());
+                    }
+                }
+            }
+            return response;
         }
         private JsonResponse Upload(string target, HttpFileCollection targets)
         {

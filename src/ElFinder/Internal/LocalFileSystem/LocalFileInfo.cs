@@ -1,5 +1,4 @@
-﻿using System;
-using System.Diagnostics.Contracts;
+﻿using System.Diagnostics.Contracts;
 using System.IO;
 using System.Web;
 
@@ -64,12 +63,60 @@ namespace ElFinder
             return response;
         }
 
+        public override void Delete()
+        {
+            File.Delete(FileInfo.FullName);
+        }
+        
         public void CopyTo(Stream output)
         {
-            using (FileStream file = FileInfo.OpenRead())
+            using (Stream readFrom = OpenRead())
             {
-                file.CopyTo(output);
+                readFrom.CopyTo(output);
             }
+        }
+
+        public void CopyTo(IFileInfo output)
+        {
+            LocalFileInfo localSystemFile = output as LocalFileInfo;
+            //if (localSystemFile != null) // fast copy for localsystem units
+            //{
+            //    File.Copy(FileInfo.FullName, localSystemFile.FileInfo.FullName, true);
+            //}
+            //else
+            {
+                using (Stream writeTo = output.OpenWrite())
+                {
+                    CopyTo(writeTo);
+                }
+            }
+        }
+
+        public void CutTo(IFileInfo output)
+        {
+            LocalFileInfo localSystemFile = output as LocalFileInfo;
+            //if (localSystemFile != null) // fast move for localsystem units
+            //{
+            //    File.Move(FileInfo.FullName, localSystemFile.FileInfo.FullName);
+            //}
+            //else
+            {
+                using (Stream writeTo = output.OpenWrite())
+                {
+                    CopyTo(writeTo);
+                }
+            }
+            Delete();
+        }
+
+        public Stream OpenRead()
+        {
+            return FileInfo.OpenRead();
+        }
+
+        public Stream OpenWrite()
+        {
+            return FileInfo.Open(FileMode.Create, FileAccess.Write);
         }
 
         public bool IsFileFromCache(HttpRequest request, HttpResponse response)

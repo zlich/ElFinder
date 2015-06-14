@@ -41,7 +41,7 @@ namespace ElFinder
         /// </summary>
         public IDirectoryInfo Directory
         {
-            get { return new LocalDirectoryInfo(this, m_directory); }
+            get { return new LocalDirectoryInfo(this, m_directoryPath); }
         }
 
         /// <summary>
@@ -84,7 +84,7 @@ namespace ElFinder
 
         public IFileInfo CreateFile(string relativeDir, string name)
         {
-            string path = Path.Combine(m_directoryPath, PathHelper.NormalizeRelativePath(relativeDir), name);
+            string path = Path.Combine(GetFullPath(relativeDir), name);
             if (!System.IO.File.Exists(path))
                 using (FileStream stream = File.Create(path)) { }
             return new LocalFileInfo(this, path);
@@ -94,30 +94,6 @@ namespace ElFinder
         {
             return new LocalFileInfo(this, Rename(relativePath, newName, false));
         }
-
-        public void DeleteFile(string relativePath)
-        {
-            Delete(relativePath, false);
-        }
-
-        public string GetText(string relativePath)
-        {
-            string path = GetFullPath(relativePath);
-            using (StreamReader reader = File.OpenText(path))
-            {
-                return reader.ReadToEnd();
-            }
-        }
-
-        public void PutText(string relativePath, string content)
-        {
-            string path = GetFullPath(relativePath);
-            using (StreamWriter writer = new StreamWriter(path, false))
-            {
-                writer.Write(content);
-            }
-        }
-
         #endregion
 
         #region Directory operations
@@ -128,7 +104,7 @@ namespace ElFinder
 
         public IDirectoryInfo CreateDirectory(string relativeDir, string name)
         {
-            string path = Path.Combine(m_directoryPath, PathHelper.NormalizeRelativePath(relativeDir), name);
+            string path = Path.Combine(GetFullPath(relativeDir), name);
             if (!System.IO.Directory.Exists(path))
                 return new LocalDirectoryInfo(this, System.IO.Directory.CreateDirectory(path));
             else
@@ -139,10 +115,6 @@ namespace ElFinder
         {
             return new LocalDirectoryInfo(this, Rename(relativePath, newName, true));
         }
-        public void DeleteDirectory(string relativePath)
-        {
-            Delete(relativePath, true);
-        } 
         #endregion
 
 
@@ -153,7 +125,6 @@ namespace ElFinder
             if (!directory.Exists)
                 throw new ArgumentException("Root directory must exist", "directory");
 
-            m_directory = directory;
             m_directoryPath = directory.FullName;
             int length = m_directoryPath.Length;
             if (m_directoryPath[length - 1] == '\\')
@@ -193,21 +164,11 @@ namespace ElFinder
             return dest;
         }
 
-        private void Delete(string relativePath, bool isDir)
-        {
-            string path = GetFullPath(relativePath);
-            if (isDir)
-                System.IO.Directory.Delete(path, true);
-            else
-                File.Delete(path);
-        }
-
         private string GetFullPath(string relativePath)
         {
             return Path.Combine(m_directoryPath, PathHelper.NormalizeRelativePath(relativePath));
         }
      
-        private readonly DirectoryInfo m_directory;
         private readonly string m_directoryPath;
 
         private readonly ThumbnailsManager m_thumbnailManager;

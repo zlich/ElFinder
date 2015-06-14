@@ -8,13 +8,24 @@ using System.IO;
 
 namespace ElFinderTests
 {
-    [SetUpFixture]
-    public class LocalSystemSetUp
+    public class LocalSystemTestsBase
     {
         [SetUp]
         public void CreateUnits()
         {
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
             CleanUp();
+            //subfolder
+            //testPicture.jpg
+            //testText  (hidden)
+            //testText.txt
+            //subfolder/subfolder file.txt
+            //subfolder/1 (hidden)
+            //subfolder/1/subfolder file.txt
+            //subfolder/2
+            //subfolder/2/subfolder file.txt
+
 
             DirectoryInfo testDir = new DirectoryInfo(TestHelper.TestDataPath);
             CreateSubfolderFile(testDir, "testText");
@@ -31,24 +42,21 @@ namespace ElFinderTests
 
             DirectoryInfo dir2 = Directory.CreateDirectory(Path.Combine(subfolder.FullName, "2"));
             CreateSubfolderFile(dir2);
+            Console.WriteLine("Files prepared: " + stopWatch.ElapsedMilliseconds + "ms");
+            stopWatch.Stop();
         }
 
         [TearDown]
         public void CleanUp()
         {
-            string[] subdirs = new string[] { "subfolder" };
-            string[] subfiles = new string[] { "testText", "testText.txt" };
-            foreach (string item in subdirs)
+            foreach (string item in Directory.GetDirectories(TestHelper.TestDataPath))
             {
-                string path = TestHelper.GetTestDataPath(item);
-                if (Directory.Exists(path))
-                    Directory.Delete(path, true);
+                    Directory.Delete(item, true);
             }
-            foreach (string item in subfiles)
+            foreach (string item in Directory.GetFiles(TestHelper.TestDataPath))
             {
-                string path = TestHelper.GetTestDataPath(item);
-                if (File.Exists(path))
-                    File.Delete(path);
+                if(Path.GetFileName(item) != "testPicture.jpg")
+                    File.Delete(item);
             }
         }
 

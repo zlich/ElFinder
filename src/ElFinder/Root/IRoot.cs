@@ -30,11 +30,6 @@ namespace ElFinder
 
         IFileInfo RenameFile(string relativePath, string name);
 
-        string GetText(string relativePath);
-
-        void PutText(string relativePath, string content);
-
-        void DeleteFile(string relativePath); 
         #endregion
 
         #region Directory operations
@@ -44,7 +39,6 @@ namespace ElFinder
 
         IDirectoryInfo RenameDirectory(string relativePath, string name);
 
-        void DeleteDirectory(string relativePath); 
         #endregion
     }
 
@@ -132,25 +126,6 @@ namespace ElFinder
             return null;
         }
 
-        void IRoot.DeleteFile(string relativePath)
-        {
-            Contract.Requires(relativePath != null);
-        }
-
-        string IRoot.GetText(string relativePath)
-        {
-            Contract.Requires(relativePath != null);
-            Contract.Ensures(Contract.Result<string>() != null);
-
-            return null;
-        }
-
-        void IRoot.PutText(string relativePath, string content)
-        {
-            Contract.Requires(relativePath != null);
-            Contract.Requires(content != null);
-        }
-
         IDirectoryInfo IRoot.GetDirectory(string relativePath)
         {
             Contract.Requires(relativePath != null);
@@ -175,11 +150,6 @@ namespace ElFinder
             Contract.Ensures(Contract.Result<IDirectoryInfo>() != null);
 
             return null;
-        }
-
-        void IRoot.DeleteDirectory(string relativePath)
-        {
-            Contract.Requires(relativePath != null);
         }
     }
 }

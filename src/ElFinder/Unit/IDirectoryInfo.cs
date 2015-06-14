@@ -31,6 +31,18 @@ namespace ElFinder
         /// </summary>
         /// <returns>The collection of all units.</returns>
         IEnumerable<IUnitInfo> GetUnits();
+
+        /// <summary>
+        /// Copies directory to another directory info.
+        /// </summary>
+        /// <param name="output">The output directory info.</param>
+        void CopyTo(IDirectoryInfo output);
+
+        /// <summary>
+        /// Cuts directory to another directory info.
+        /// </summary>
+        /// <param name="output">The output directory info.</param>
+        void CutTo(IDirectoryInfo output);
     }
 
     [ContractClassFor(typeof(IDirectoryInfo))]
@@ -63,6 +75,16 @@ namespace ElFinder
             return null;
         }
 
+        void IDirectoryInfo.CopyTo(IDirectoryInfo output)
+        {
+            Contract.Requires(output != null);
+        }
+
+        void IDirectoryInfo.CutTo(IDirectoryInfo output)
+        {
+            Contract.Requires(output != null);
+        }
+
         public abstract string Name { get; }
 
         public abstract IRoot Root { get; }
@@ -74,6 +96,8 @@ namespace ElFinder
         public abstract string RelativePath { get; }
 
         public abstract bool IsHidden { get; }
+
+        public abstract void Delete();
 
         public abstract UnitDTO ToDTO();
     }

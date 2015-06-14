@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace ElFinderTests
 {
     [TestFixture]
-    public class LocalDirectoryInfoTests
+    public class LocalDirectoryInfoTests : LocalSystemTestsBase
     {
         [Test]
         public void TestName()
